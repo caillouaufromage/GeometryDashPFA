@@ -6,6 +6,7 @@ class type collidable =
     inherit position
     inherit box
     inherit mass
+    inherit on_jump
   end
 
 type t = collidable
@@ -22,11 +23,13 @@ let update _dt el =
       let m1 = e1#mass#get in
       Seq.iteri
         (fun j (e2 : t) ->
+          (*Gfx.debug "%f" (e1#velocity#get).x;*)
           let m2 = e2#mass#get in
           (* Une double boucle qui évite de comparer deux fois
              les objets : si on compare A et B, on ne compare pas B et A.
              Il faudra améliorer cela si on a beaucoup (> 30) objets simultanément.
           *)
+
           if j > i && (Float.is_finite m1 || Float.is_finite m2) then begin
             (* les composants du rectangle r2 *)
             let pos2 = e2#position#get in
@@ -40,6 +43,11 @@ let update _dt el =
               Rect.has_origin s_pos s_rect
               && not (Vector.is_zero v1 && Vector.is_zero v2)
             then begin
+              let e1_onground = (e2#position#get.y > e1#position#get.y) in
+
+              if(e1_onground) then
+                e1#on_jump#set 2;
+
               (* [3] le plus petit des vecteurs a b c d *)
               let a = Vector.{ x = s_pos.x; y = 0.0 } in
               let b = Vector.{ x = float s_rect.width +. s_pos.x; y = 0.0 } in
@@ -104,8 +112,8 @@ let update _dt el =
               let new_v2 = Vector.sub v2 (Vector.mult (j/. m2) n) in
               (* [9] mise à jour des vitesses *)
               e1#velocity#set new_v1;
-              e2#velocity#set new_v2
-            end
+              e2#velocity#set new_v2;
+            end;
           end)
         el)
     el

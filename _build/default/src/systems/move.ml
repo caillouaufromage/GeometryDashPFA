@@ -13,7 +13,7 @@ let init () = ()
 let dt = 1000. /. 60.
 
 let update _dt el =
-  let ply = Game_state.get_player() in
+  (*let ply = Game_state.get_player() in*)
 
   (*ply#velocity#set Vector.{x = 0.33; y = ply#velocity#get.y +. 0.05};*)
 

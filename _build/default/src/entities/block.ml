@@ -12,12 +12,14 @@ let make x y width height c mass =
       inherit mass
       inherit velocity
       inherit sum_forces
+      inherit on_jump
     end
   in
 
   b#position#set Vector.{ x; y };
   b#box#set Rect.{ width; height };
   b#color#set c;
+  b#on_jump#set 2;
   Draw_system.register (b :> Draw_system.t);
 
   (* Question 2 *)

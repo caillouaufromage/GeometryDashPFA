@@ -38,6 +38,12 @@ class sum_forces =
     method sum_forces = sum_forces
   end
 
+class on_jump =
+  object
+    val on_jump = Component.def 2
+    method on_jump = on_jump
+  end
+
 class type player =
   object
     inherit position
@@ -48,5 +54,5 @@ class type player =
     inherit mass
     inherit velocity
     inherit sum_forces
+    inherit on_jump
   end
-

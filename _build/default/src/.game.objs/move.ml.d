@@ -1,1 +1,1 @@
-src/systems/move.ml: Component_defs Game_state Seq Vector
+src/systems/move.ml: Component_defs Seq Vector

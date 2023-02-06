@@ -43,10 +43,11 @@ let update _dt el =
               Rect.has_origin s_pos s_rect
               && not (Vector.is_zero v1 && Vector.is_zero v2)
             then begin
-              let e1_onground = (e2#position#get.y > e1#position#get.y) in
-
-              if(e1_onground) then
-                e1#on_jump#set 2;
+              (* Reset les sauts si il est au-dessus d'une surface *)
+              if (e2#position#get.y > e1#position#get.y) then
+                e1#on_jump#set 2
+              else
+                e2#on_jump#set 2;
 
               (* [3] le plus petit des vecteurs a b c d *)
               let a = Vector.{ x = s_pos.x; y = 0.0 } in

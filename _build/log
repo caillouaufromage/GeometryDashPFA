@@ -1,10 +1,9 @@
 # dune build
 # OCAMLPARAM: unset
 # Shared cache: disabled
-# Workspace root:
-# /home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA
-# Auto-detected concurrency: 8
-$ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_582d9e_output
+# Workspace root: /home/akulla/Bureau/projet_pfa/GeometryDashPFA
+# Auto-detected concurrency: 20
+$ /home/akulla/.opam/default/bin/ocamlc.opt -config > /tmp/dune_e4f465_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -13,40 +12,41 @@ $ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_582d9e_o
 #  ; for_host = None
 #  ; fdo_target_exe = None
 #  ; build_dir = "default"
-#  ; toplevel_path =
-#      Some External "/partage/public/kn/opam/4.14.1/lib/toplevel"
-#  ; ocaml_bin = External "/partage/public/kn/opam/4.14.1/bin"
-#  ; ocaml = Ok External "/partage/public/kn/opam/4.14.1/bin/ocaml"
-#  ; ocamlc = External "/partage/public/kn/opam/4.14.1/bin/ocamlc.opt"
-#  ; ocamlopt = Ok External "/partage/public/kn/opam/4.14.1/bin/ocamlopt.opt"
-#  ; ocamldep = Ok External "/partage/public/kn/opam/4.14.1/bin/ocamldep.opt"
-#  ; ocamlmklib =
-#      Ok External "/partage/public/kn/opam/4.14.1/bin/ocamlmklib.opt"
+#  ; toplevel_path = Some External "/home/akulla/.opam/default/lib/toplevel"
+#  ; ocaml_bin = External "/home/akulla/.opam/default/bin"
+#  ; ocaml = Ok External "/home/akulla/.opam/default/bin/ocaml"
+#  ; ocamlc = External "/home/akulla/.opam/default/bin/ocamlc.opt"
+#  ; ocamlopt = Ok External "/home/akulla/.opam/default/bin/ocamlopt.opt"
+#  ; ocamldep = Ok External "/home/akulla/.opam/default/bin/ocamldep.opt"
+#  ; ocamlmklib = Ok External "/home/akulla/.opam/default/bin/ocamlmklib.opt"
 #  ; env =
 #      map
-#        { "DUNE_OCAML_HARDCODED" : "/partage/public/kn/opam/4.14.1/lib"
-#        ; "DUNE_OCAML_STDLIB" : "/partage/public/kn/opam/4.14.1/lib/ocaml"
-#        ; "DUNE_SOURCEROOT" :
-#            "/home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA"
+#        { "DUNE_OCAML_HARDCODED" :
+#            "/home/akulla/.opam/default/lib/ocaml:/home/akulla/.opam/default/lib"
+#        ; "DUNE_OCAML_STDLIB" : "/home/akulla/.opam/default/lib/ocaml"
+#        ; "DUNE_SOURCEROOT" : "/home/akulla/Bureau/projet_pfa/GeometryDashPFA"
 #        ; "INSIDE_DUNE" :
-#            "/home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA/_build/default"
+#            "/home/akulla/Bureau/projet_pfa/GeometryDashPFA/_build/default"
 #        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "/home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA/_build/install/default/lib"
+#            "/home/akulla/Bureau/projet_pfa/GeometryDashPFA/_build/install/default/lib"
 #        ; "OCAMLPATH" :
-#            "/home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA/_build/install/default/lib"
+#            "/home/akulla/Bureau/projet_pfa/GeometryDashPFA/_build/install/default/lib"
 #        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "/home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA/_build/install/default/lib/toplevel"
+#            "/home/akulla/Bureau/projet_pfa/GeometryDashPFA/_build/install/default/lib/toplevel"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
-#  ; findlib_paths = [ External "/partage/public/kn/opam/4.14.1/lib" ]
+#  ; findlib_paths =
+#      [ External "/home/akulla/.opam/default/lib/ocaml"
+#      ; External "/home/akulla/.opam/default/lib"
+#      ]
 #  ; arch_sixtyfour = true
 #  ; natdynlink_supported = true
 #  ; supports_shared_libraries = true
 #  ; ocaml_config =
-#      { version = "4.14.1"
-#      ; standard_library_default = "/partage/public/kn/opam/4.14.1/lib/ocaml"
-#      ; standard_library = "/partage/public/kn/opam/4.14.1/lib/ocaml"
+#      { version = "5.0.0"
+#      ; standard_library_default = "/home/akulla/.opam/default/lib/ocaml"
+#      ; standard_library = "/home/akulla/.opam/default/lib/ocaml"
 #      ; standard_runtime = "the_standard_runtime_variable_was_deleted"
 #      ; ccomp_type = "cc"
 #      ; c_compiler = "gcc"
@@ -75,7 +75,7 @@ $ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_582d9e_o
 #          ; "-fPIC"
 #          ; "-D_FILE_OFFSET_BITS=64"
 #          ]
-#      ; native_c_libraries = [ "-lm"; "-ldl" ]
+#      ; native_c_libraries = [ "-lm"; "-ldl"; "-lpthread" ]
 #      ; native_pack_linker = [ "ld"; "-r"; "-o" ]
 #      ; cc_profile = []
 #      ; architecture = "amd64"
@@ -100,26 +100,26 @@ $ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_582d9e_o
 #      ; flambda = false
 #      ; spacetime = false
 #      ; safe_string = true
-#      ; exec_magic_number = "Caml1999X031"
-#      ; cmi_magic_number = "Caml1999I031"
-#      ; cmo_magic_number = "Caml1999O031"
-#      ; cma_magic_number = "Caml1999A031"
-#      ; cmx_magic_number = "Caml1999Y031"
-#      ; cmxa_magic_number = "Caml1999Z031"
-#      ; ast_impl_magic_number = "Caml1999M031"
-#      ; ast_intf_magic_number = "Caml1999N031"
-#      ; cmxs_magic_number = "Caml1999D031"
-#      ; cmt_magic_number = "Caml1999T031"
+#      ; exec_magic_number = "Caml1999X032"
+#      ; cmi_magic_number = "Caml1999I032"
+#      ; cmo_magic_number = "Caml1999O032"
+#      ; cma_magic_number = "Caml1999A032"
+#      ; cmx_magic_number = "Caml1999Y032"
+#      ; cmxa_magic_number = "Caml1999Z032"
+#      ; ast_impl_magic_number = "Caml1999M032"
+#      ; ast_intf_magic_number = "Caml1999N032"
+#      ; cmxs_magic_number = "Caml1999D032"
+#      ; cmt_magic_number = "Caml1999T032"
 #      ; natdynlink_supported = true
 #      ; supports_shared_libraries = true
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamldep.opt -modules -impl src/systems/input.ml) > _build/default/src/.game.objs/input.ml.d
-$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Input.cmo -c -impl src/systems/input.ml)
-$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -a -o src/game.cma src/.game.objs/byte/game__.cmo src/.game.objs/byte/game__Vector.cmo src/.game.objs/byte/game__Rect.cmo src/.game.objs/byte/game__Component_defs.cmo src/.game.objs/byte/game__Collisions.cmo src/.game.objs/byte/game__Game_state.cmo src/.game.objs/byte/game__Draw.cmo src/.game.objs/byte/game__Forces.cmo src/.game.objs/byte/game__Input.cmo src/.game.objs/byte/game__Move.cmo src/.game.objs/byte/game__System_defs.cmo src/.game.objs/byte/game__Block.cmo src/.game.objs/byte/game.cmo)
-$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -o prog/game_js.bc-for-jsoo -no-check-prims lib/ecs/ecs.cma /partage/public/kn/opam/4.14.1/lib/js_of_ocaml-compiler/runtime/jsoo_runtime.cma /partage/public/kn/opam/4.14.1/lib/js_of_ocaml/js_of_ocaml.cma lib/gfx/gfx_jsoo/gfx_jsoo.cma src/game.cma prog/.game_js.eobjs/byte/dune__exe__Game_js.cmo)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamldep.opt -modules -impl src/game.ml) > _build/default/src/.game.objs/game.ml.d
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game.cmo -c -impl src/game.ml)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -a -o src/game.cma src/.game.objs/byte/game__.cmo src/.game.objs/byte/game__Vector.cmo src/.game.objs/byte/game__Rect.cmo src/.game.objs/byte/game__Component_defs.cmo src/.game.objs/byte/game__Collisions.cmo src/.game.objs/byte/game__Game_state.cmo src/.game.objs/byte/game__Draw.cmo src/.game.objs/byte/game__Forces.cmo src/.game.objs/byte/game__Input.cmo src/.game.objs/byte/game__Move.cmo src/.game.objs/byte/game__System_defs.cmo src/.game.objs/byte/game__Block.cmo src/.game.objs/byte/game.cmo)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -o prog/game_js.bc-for-jsoo -no-check-prims lib/ecs/ecs.cma /home/akulla/.opam/default/lib/js_of_ocaml-compiler/runtime/jsoo_runtime.cma /home/akulla/.opam/default/lib/js_of_ocaml/js_of_ocaml.cma lib/gfx/gfx_jsoo/gfx_jsoo.cma src/game.cma prog/.game_js.eobjs/byte/dune__exe__Game_js.cmo)
 # Promoting "_build/default/prog/game_js.bc-for-jsoo" to
 # "prog/game_js.bc-for-jsoo"
-$ (cd _build/default/prog && /partage/public/kn/opam/4.14.1/bin/js_of_ocaml -I . --file=../resources/files -o game_js.bc.js game_js.bc-for-jsoo)
+$ (cd _build/default/prog && /home/akulla/.opam/default/bin/js_of_ocaml -I . --file=../resources/files -o game_js.bc.js game_js.bc-for-jsoo)
 # Promoting "_build/default/prog/game_js.bc.js" to "prog/game_js.bc.js"

@@ -6,13 +6,14 @@ let init () =
   Game_state.set_window win
 
 (* Question 1 *)
+let sizeLevel = 1500;;
 let init_walls () =
   let blue = Gfx.color 0 0 255 255 in
   let black = Gfx.color 0 0 0 255 in
-  ignore (Block.make 0.0 0.0 800 40 blue infinity);
-  ignore (Block.make 0.0 560.0 800 40 blue infinity);
+  ignore (Block.make 0.0 0.0 sizeLevel 40 blue infinity);
+  ignore (Block.make 0.0 560.0 sizeLevel 40 blue infinity);
   ignore (Block.make 0.0 40.0 40 520 black infinity);
-  ignore (Block.make 760.0 40.0 40 520 black infinity)
+  ignore (Block.make ((float_of_int sizeLevel) -. 60.0) 40.0 40 520 black infinity)
 
 (* Question 4
    let init_square () =

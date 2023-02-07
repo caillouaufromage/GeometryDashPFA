@@ -44,6 +44,12 @@ class on_jump =
     method on_jump = on_jump
   end
 
+class block_type =
+  object
+    val block_type = Component.def Block_type.Solid
+    method block_type = block_type
+  end
+
 class type player =
   object
     inherit position
@@ -55,4 +61,5 @@ class type player =
     inherit velocity
     inherit sum_forces
     inherit on_jump
+    inherit block_type
   end

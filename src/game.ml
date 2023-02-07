@@ -2,29 +2,36 @@ open System_defs
 
 (* On crée une fenêtre *)
 let init () =
-  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 800 600) in
+  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 1024 512) in
   Game_state.set_window win
 
 (* Question 1 *)
-let sizeLevel = 1500;;
-let init_walls () =
-  let blue = Gfx.color 0 0 255 255 in
-  let black = Gfx.color 0 0 0 255 in
-  ignore (Block.make 0.0 0.0 sizeLevel 40 blue infinity);
-  ignore (Block.make 0.0 560.0 sizeLevel 40 blue infinity);
-  ignore (Block.make 0.0 40.0 40 520 black infinity);
-  ignore (Block.make ((float_of_int sizeLevel) -. 60.0) 40.0 40 520 black infinity)
 
-(* Question 4
-   let init_square () =
-     let s = Block.make 100.0 100.0 100 100 (Gfx.color 255 0 0 255) 10.0 in
-     (* Question 4
-        s # velocity # set Vector.{x = 0.25; y = 0.25 }
-     *)
-     (* Question 5 *)
-     s#sum_forces#set Vector.{ x = 0.25; y = 0.25 }
-*)
+let create_level id =
+  let n = "files/01.level" in
+  let chan = open_in n in
 
+  (* Credits: https://stackoverflow.com/questions/5774934/how-do-i-read-in-lines-from-a-text-file-in-ocaml*)
+  try
+    while true; do
+      let line = input_line chan in
+
+      if (not (String.starts_with "####" line)) then
+        let blockInfos = (String.split_on_char ' ' line) in
+        let arrInfos = Array.of_list blockInfos in
+
+        ignore(Block.make 
+          (float_of_string arrInfos.(0))
+          (float_of_string arrInfos.(1))
+          (int_of_string arrInfos.(2))
+          (int_of_string arrInfos.(3))
+          (Gfx.color 0 0 255 255 )
+          infinity
+          Block_type.Solid);
+      ();
+    done;
+  with End_of_file ->
+    close_in chan;;
 (*
  let keys = Hashtbl.create 16
 let white = Gfx.color 255 255 255 2555
@@ -55,14 +62,15 @@ let update dt =
 
 let run () =
   init ();
-  init_walls ();
-
   let x = 150.0 in
   let y = 140.0 in
   let mass = 1.0 +. Random.float 19.0 in
-  let s = Block.make x y 50 50 (Gfx.color 255 0 0 255) mass in
+  let s = Block.make x y 50 50 (Gfx.color 255 0 0 255) mass Block_type.Player in
   s#sum_forces#set Vector.{ x = Random.float 0.25; y = Random.float 0.25 };
 
   Game_state.set_player s;
+  Draw_system.init();
+ 
+  create_level 1;
 
   Gfx.main_loop update

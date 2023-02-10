@@ -23,11 +23,11 @@ let update _dt el =
   in
   
   (*ply#on_ground#set true;*)
-  ply#color#set (if ply#on_jump#get < 2 then (Gfx.color 0 0 0 255) else (Gfx.color 0 0 255 255));
+  ply#color#set (if ply#on_jump#get < 2 then (Gfx.color 0 255 0 255) else (Gfx.color 0 0 255 255));
   if Hashtbl.mem keys "c" && (ply#on_jump#get > 0) then begin
       (*let f = Vector.add (Vec) {x=0.0; y=1.9475} in*)
       let f = ply#sum_forces#get in 
-      let f = Vector.add f {x = 0.0; y = -0.25} in 
+      let f = Vector.add f {x = 0.0; y = -0.5} in 
       ply#sum_forces#set f;
       ply#on_jump#set (ply#on_jump#get - 1)
   end;

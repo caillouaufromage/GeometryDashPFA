@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /home/akulla/Bureau/projet_pfa/GeometryDashPFA
 # Auto-detected concurrency: 20
-$ /home/akulla/.opam/default/bin/ocamlc.opt -config > /tmp/dune_e4f465_output
+$ /home/akulla/.opam/default/bin/ocamlc.opt -config > /tmp/dune_456e61_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -115,9 +115,22 @@ $ /home/akulla/.opam/default/bin/ocamlc.opt -config > /tmp/dune_e4f465_output
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /home/akulla/.opam/default/bin/ocamldep.opt -modules -impl src/game.ml) > _build/default/src/.game.objs/game.ml.d
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamldep.opt -modules -impl src/systems/collisions.ml) > _build/default/src/.game.objs/collisions.ml.d
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Collisions.cmo -c -impl src/systems/collisions.ml)
+> File "src/systems/collisions.ml", line 24, characters 8-18:
+> 24 |     let solid_type = solid#block_type#get in
+>              ^^^^^^^^^^
+> Warning 26 [unused-var]: unused variable solid_type.
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__System_defs.cmo -c -impl src/system_defs.ml)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Level_load.cmo -c -impl src/utils/levels/level_load.ml)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Block.cmo -c -impl src/entities/block.ml)
 $ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game.cmo -c -impl src/game.ml)
-$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -a -o src/game.cma src/.game.objs/byte/game__.cmo src/.game.objs/byte/game__Vector.cmo src/.game.objs/byte/game__Rect.cmo src/.game.objs/byte/game__Component_defs.cmo src/.game.objs/byte/game__Collisions.cmo src/.game.objs/byte/game__Game_state.cmo src/.game.objs/byte/game__Draw.cmo src/.game.objs/byte/game__Forces.cmo src/.game.objs/byte/game__Input.cmo src/.game.objs/byte/game__Move.cmo src/.game.objs/byte/game__System_defs.cmo src/.game.objs/byte/game__Block.cmo src/.game.objs/byte/game.cmo)
+> File "src/game.ml", line 19, characters 15-33:
+> 19 |       if (not (String.starts_with "####" line)) then
+>                     ^^^^^^^^^^^^^^^^^^
+> Warning 6 [labels-omitted]: label prefix was omitted in the application of this function.
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -a -o src/game.cma src/.game.objs/byte/game__.cmo src/.game.objs/byte/game__Vector.cmo src/.game.objs/byte/game__Block_type.cmo src/.game.objs/byte/game__Rect.cmo src/.game.objs/byte/game__Component_defs.cmo src/.game.objs/byte/game__Game_state.cmo src/.game.objs/byte/game__Collisions.cmo src/.game.objs/byte/game__Draw.cmo src/.game.objs/byte/game__Forces.cmo src/.game.objs/byte/game__Input.cmo src/.game.objs/byte/game__Move.cmo src/.game.objs/byte/game__System_defs.cmo src/.game.objs/byte/game__Level_load.cmo src/.game.objs/byte/game__Block.cmo src/.game.objs/byte/game.cmo)
+$ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -bin-annot -I prog/.game_js.eobjs/byte -I /home/akulla/.opam/default/lib/js_of_ocaml -I /home/akulla/.opam/default/lib/js_of_ocaml-compiler/runtime -I lib/ecs/.ecs.objs/byte -I lib/gfx/gfx_jsoo/.gfx_jsoo.objs/byte -I src/.game.objs/byte -no-alias-deps -o prog/.game_js.eobjs/byte/dune__exe__Game_js.cmo -c -impl prog/game_js.pp.ml)
 $ (cd _build/default && /home/akulla/.opam/default/bin/ocamlc.opt -w -40 -g -o prog/game_js.bc-for-jsoo -no-check-prims lib/ecs/ecs.cma /home/akulla/.opam/default/lib/js_of_ocaml-compiler/runtime/jsoo_runtime.cma /home/akulla/.opam/default/lib/js_of_ocaml/js_of_ocaml.cma lib/gfx/gfx_jsoo/gfx_jsoo.cma src/game.cma prog/.game_js.eobjs/byte/dune__exe__Game_js.cmo)
 # Promoting "_build/default/prog/game_js.bc-for-jsoo" to
 # "prog/game_js.bc-for-jsoo"

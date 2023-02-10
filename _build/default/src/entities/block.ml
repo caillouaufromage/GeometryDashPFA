@@ -1,7 +1,7 @@
 open Component_defs
 open System_defs
 
-let make x y width height c mass =
+let make x y width height c mass (block_type: Block_type.block_type) =
   let b =
     object
       inherit position
@@ -13,6 +13,8 @@ let make x y width height c mass =
       inherit velocity
       inherit sum_forces
       inherit on_jump
+      inherit block_type
+      inherit rot
     end
   in
 
@@ -20,6 +22,8 @@ let make x y width height c mass =
   b#box#set Rect.{ width; height };
   b#color#set c;
   b#on_jump#set 2;
+  b#block_type#set block_type;
+  b#rot#set 0.0;
   Draw_system.register (b :> Draw_system.t);
 
   (* Question 2 *)

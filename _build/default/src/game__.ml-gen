@@ -3,6 +3,9 @@
 (** @canonical Game.Block *)
 module Block = Game__Block
 
+(** @canonical Game.Block_type *)
+module Block_type = Game__Block_type
+
 (** @canonical Game.Collisions *)
 module Collisions = Game__Collisions
 
@@ -20,6 +23,9 @@ module Game_state = Game__Game_state
 
 (** @canonical Game.Input *)
 module Input = Game__Input
+
+(** @canonical Game.Level_load *)
+module Level_load = Game__Level_load
 
 (** @canonical Game.Move *)
 module Move = Game__Move

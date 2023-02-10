@@ -7,11 +7,38 @@ class type collidable =
     inherit box
     inherit mass
     inherit on_jump
+    inherit block_type
   end
 
 type t = collidable
 
 let init () = ()
+
+let onCollision (b1: collidable) (b2: collidable) =
+  let t1 = b1#block_type#get in
+  let t2 = b2#block_type#get in
+
+  if(t1 = Block_type.Player || t2 = Block_type.Player) then
+    let ply = Game_state.get_player() in
+    let solid = (if t1 != Block_type.Player then b1 else b2) in
+    let solid_type = solid#block_type#get in
+
+    (*if solid_type = Block_type.Solid then
+      ply#position#set (Vector.add ply#position#get Vector.{x = 0.0; y = -100.0});*)
+
+      if (ply#position#get.y < solid#position#get.y) then begin
+        (* Redonner les sauts au joueur *)
+        ply#on_jump#set 1;
+
+          (* Reset son angle*)
+        let ang = (int_of_float ply#rot#get) mod 90 in
+        if ang < 45 then
+          ply#rot#set ((Float.floor (ply#rot#get /. 90.0)) *. 90.0)
+        else
+          ply#rot#set ((Float.ceil (ply#rot#get /. 90.0)) *. 90.0);
+        end;
+
+    ();;
 
 let update _dt el =
   Seq.iteri
@@ -43,12 +70,6 @@ let update _dt el =
               Rect.has_origin s_pos s_rect
               && not (Vector.is_zero v1 && Vector.is_zero v2)
             then begin
-              (* Reset les sauts si il est au-dessus d'une surface *)
-              if (e2#position#get.y > e1#position#get.y) then
-                e1#on_jump#set 2
-              else
-                e2#on_jump#set 2;
-
               (* [3] le plus petit des vecteurs a b c d *)
               let a = Vector.{ x = s_pos.x; y = 0.0 } in
               let b = Vector.{ x = float s_rect.width +. s_pos.x; y = 0.0 } in
@@ -114,6 +135,9 @@ let update _dt el =
               (* [9] mise à jour des vitesses *)
               e1#velocity#set new_v1;
               e2#velocity#set new_v2;
+
+              (* Une collision avec le joueur à eu lieu ?*)
+              onCollision e1 e2;
             end;
           end)
         el)

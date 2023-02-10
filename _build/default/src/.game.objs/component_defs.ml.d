@@ -1,1 +1,1 @@
-src/component_defs.ml: Component Ecs Gfx Rect Vector
+src/component_defs.ml: Block_type Component Ecs Gfx Rect Vector

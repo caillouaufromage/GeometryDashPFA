@@ -38,6 +38,12 @@ class sum_forces =
     method sum_forces = sum_forces
   end
 
+class rot =
+  object
+    val rot = Component.def 0.0
+    method rot = rot
+  end
+
 class on_jump =
   object
     val on_jump = Component.def 2
@@ -62,4 +68,5 @@ class type player =
     inherit sum_forces
     inherit on_jump
     inherit block_type
+    inherit rot
   end

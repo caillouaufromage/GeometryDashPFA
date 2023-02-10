@@ -26,9 +26,17 @@ let onCollision (b1: collidable) (b2: collidable) =
     (*if solid_type = Block_type.Solid then
       ply#position#set (Vector.add ply#position#get Vector.{x = 0.0; y = -100.0});*)
 
-    (* Redonner les sauts au joueur *)
-    if (ply#position#get.y < solid#position#get.y) then
-      ply#on_jump#set 1;
+      if (ply#position#get.y < solid#position#get.y) then begin
+        (* Redonner les sauts au joueur *)
+        ply#on_jump#set 1;
+
+          (* Reset son angle*)
+        let ang = (int_of_float ply#rot#get) mod 90 in
+        if ang < 45 then
+          ply#rot#set ((Float.floor (ply#rot#get /. 90.0)) *. 90.0)
+        else
+          ply#rot#set ((Float.ceil (ply#rot#get /. 90.0)) *. 90.0);
+        end;
 
     ();;
 

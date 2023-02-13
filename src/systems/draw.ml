@@ -74,7 +74,7 @@ let update _dt el =
       if Gfx.resource_ready texture then begin
         match e#block_type#get with
           | Player -> Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) relativeX (int_of_float y) width height;
-          | Level_Solid | Solid -> 
+          | Level_Solid | Solid | Spikes -> 
             (* On applique une rotation si il y a besoin*)
             let is_heightSup = width < height in
             let min = if is_heightSup then width else height in
@@ -99,7 +99,7 @@ let update _dt el =
             else
               Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) (relativeX + displayInt * height) (int_of_float y) rest height;
 
-          | Level_End | Spikes -> ();
+          | Level_End -> ();
     end;
 
     if e#rot#get != 0.0 then

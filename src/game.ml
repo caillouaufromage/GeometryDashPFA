@@ -16,20 +16,23 @@ let create_level id =
     while true; do
       let line = input_line chan in
 
-      if (not (String.starts_with "####" line)) then
+      if (not (String.starts_with "####" line)) then begin
         let blockInfos = (String.split_on_char ' ' line) in
         let arrInfos = Array.of_list blockInfos in
         let typeBlock = ref Block_type.Solid in
 
-        match arrInfos.(4) with
-          | "4" -> typeBlock := Block_type.Spikes
-          | "2" -> typeBlock := Block_type.Solid
-          | _ -> failwith "Type de bloc non reconnu";
+        (match arrInfos.(4) with
+        | "4" -> typeBlock := Block_type.Spikes
+        | "1" -> typeBlock := Block_type.Solid
+        | _ -> failwith "Type de block n'existe pas");
 
-        (Block.make (float_of_string arrInfos.(0)) (float_of_string arrInfos.(1))
-        (int_of_string arrInfos.(2)) (int_of_string arrInfos.(3))
-        (Gfx.color 0 0 255 255 ) infinity !typeBlock);
-    ();
+        let x = (float_of_string arrInfos.(0)) in
+        let y = (float_of_string arrInfos.(1)) in
+        let width = (int_of_string arrInfos.(2)) in
+        let height = int_of_string arrInfos.(3) in
+  
+        ignore(Block.make x y width height (Gfx.color 0 0 255 255) infinity (!typeBlock));
+      end;
     done;
   with End_of_file ->
     close_in chan;;

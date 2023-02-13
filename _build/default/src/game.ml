@@ -66,7 +66,7 @@ let run () =
   let y = 140.0 in
   let mass = 1.0 +. Random.float 19.0 in
   let s = Block.make x y 50 50 (Gfx.color 255 0 0 255) mass Block_type.Player in
-  s#sum_forces#set Vector.{ x = Random.float 0.25; y = Random.float 0.25 };
+  s#sum_forces#set Vector.{ x = 0.25; y = 0.0 };
 
   Game_state.set_player s;
   Draw_system.init();

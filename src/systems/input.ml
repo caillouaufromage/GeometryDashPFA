@@ -27,7 +27,7 @@ let update _dt el =
   if Hashtbl.mem keys "c" && (ply#on_jump#get > 0) then begin
       (*let f = Vector.add (Vec) {x=0.0; y=1.9475} in*)
       let f = ply#sum_forces#get in 
-      let f = Vector.add f {x = 0.0; y = -0.5} in 
+      let f = Vector.add f {x = 0.0; y = (if ply#inverted_gravity#get then 0.5 else -0.5)} in 
       ply#sum_forces#set f;
       ply#on_jump#set (ply#on_jump#get - 1)
   end;

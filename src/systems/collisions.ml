@@ -26,7 +26,8 @@ let onCollision (b1: collidable) (b2: collidable) =
     (*if solid_type = Block_type.Solid then
       ply#position#set (Vector.add ply#position#get Vector.{x = 0.0; y = -100.0});*)
 
-      if (ply#position#get.y < solid#position#get.y) then begin
+      let outside = ply#position#get.x < solid#position#get.y in
+      if (outside != ply#inverted_gravity#get) then begin
         (* Redonner les sauts au joueur *)
         ply#on_jump#set 1;
 

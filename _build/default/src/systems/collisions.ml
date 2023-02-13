@@ -44,12 +44,6 @@ let onCollision (b1: collidable) (b2: collidable) =
     else
       side := Right;
 
-    let e = match !side with
-      | Top -> (Gfx.debug "\nTop");
-      | Bottom -> (Gfx.debug "\nBottom")
-      | Left -> (Gfx.debug "\nLeft")
-      | Right -> (Gfx.debug "\nRight") in
-
     let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
 
     if on_ground then begin

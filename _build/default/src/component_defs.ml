@@ -58,7 +58,7 @@ class block_type =
 
 class inverted_gravity =
   object
-    val inverted_gravity = Component.def false
+    val inverted_gravity = Component.def true
     method inverted_gravity = inverted_gravity
   end
 

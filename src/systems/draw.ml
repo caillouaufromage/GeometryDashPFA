@@ -17,15 +17,17 @@ let init () =
   let ctx = Gfx.get_context (Game_state.get_window()) in
 
   Hashtbl.add textures 1 (Gfx.load_image ctx "resources/player.png");
-  Hashtbl.add textures 2 (Gfx.load_image ctx "resources/wall.png");
+  Hashtbl.add textures 2 (Gfx.load_image ctx "resources/wall1.png");
   Hashtbl.add textures 3 (Gfx.load_image ctx "resources/background.jpg");
-  ();;
+  Hashtbl.add textures 4 (Gfx.load_image ctx "resources/wall2.png");   
+  () ;;
 
 let texture_from_type (b: t) =
   let blockType = b#block_type#get in
 
   match blockType with
     | Block_type.Player -> 1
+    | Block_type.Spikes -> 4
     | _ -> 2;;
 
 let white = Gfx.color 40 40 40 255
@@ -52,7 +54,7 @@ let update _dt el =
   (* Parallax, on déplace à une vitesse différente le background que le plan principal *)
   let backgroundTexture = Hashtbl.find textures 3 in
   if Gfx.resource_ready backgroundTexture then
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (int_of_float (plypos.x /. -25.0)) 0 1280 512;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (int_of_float (plypos.x /. -10.0)) 0 1280 512;
 
   Seq.iter (fun (e : t) ->
     (* En dehors du cadre, on dessine pas*)

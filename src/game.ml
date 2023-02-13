@@ -19,16 +19,17 @@ let create_level id =
       if (not (String.starts_with "####" line)) then
         let blockInfos = (String.split_on_char ' ' line) in
         let arrInfos = Array.of_list blockInfos in
+        let typeBlock = ref Block_type.Solid in
 
-        ignore(Block.make 
-          (float_of_string arrInfos.(0))
-          (float_of_string arrInfos.(1))
-          (int_of_string arrInfos.(2))
-          (int_of_string arrInfos.(3))
-          (Gfx.color 0 0 255 255 )
-          infinity
-          Block_type.Solid);
-      ();
+        match arrInfos.(4) with
+          | "4" -> typeBlock := Block_type.Spikes
+          | "2" -> typeBlock := Block_type.Solid
+          | _ -> failwith "Type de bloc non reconnu";
+
+        (Block.make (float_of_string arrInfos.(0)) (float_of_string arrInfos.(1))
+        (int_of_string arrInfos.(2)) (int_of_string arrInfos.(3))
+        (Gfx.color 0 0 255 255 ) infinity !typeBlock);
+    ();
     done;
   with End_of_file ->
     close_in chan;;

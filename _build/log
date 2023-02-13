@@ -4,7 +4,7 @@
 # Workspace root:
 # /home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa/dm/GeometryDashPFA
 # Auto-detected concurrency: 8
-$ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_84a6c8_output
+$ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_3ba8a0_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -116,18 +116,30 @@ $ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_84a6c8_o
 #      }
 #  }
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamldep.opt -modules -impl src/systems/collisions.ml) > _build/default/src/.game.objs/collisions.ml.d
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamldep.opt -modules -impl src/component_defs.ml) > _build/default/src/.game.objs/component_defs.ml.d
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Component_defs.cmo -c -impl src/component_defs.ml)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Game_state.cmi -c -intf src/game_state.mli)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -intf-suffix .ml -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Game_state.cmo -c -impl src/game_state.ml)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Input.cmo -c -impl src/systems/input.ml)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Draw.cmo -c -impl src/systems/draw.ml)
+> File "src/systems/draw.ml", line 63, characters 8-13:
+> 63 |     let color = e # color # get in 
+>              ^^^^^
+> Warning 26 [unused-var]: unused variable color.
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Forces.cmo -c -impl src/systems/forces.ml)
+> File "src/systems/forces.ml", line 20, characters 6-7:
+> 20 |   let f = p#sum_forces#get in
+>            ^
+> Warning 26 [unused-var]: unused variable f.
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Move.cmo -c -impl src/systems/move.ml)
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Collisions.cmo -c -impl src/systems/collisions.ml)
 > File "src/systems/collisions.ml", line 25, characters 8-18:
 > 25 |     let solid_type = solid#block_type#get in
 >              ^^^^^^^^^^
 > Warning 26 [unused-var]: unused variable solid_type.
-> File "src/systems/collisions.ml", line 47, characters 8-9:
-> 47 |     let e = match !side with
->              ^
-> Warning 26 [unused-var]: unused variable e.
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__System_defs.cmo -c -impl src/system_defs.ml)
-$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Level_load.cmo -c -impl src/utils/levels/level_load.ml)
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Block.cmo -c -impl src/entities/block.ml)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Level_load.cmo -c -impl src/utils/levels/level_load.ml)
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game.cmo -c -impl src/game.ml)
 > File "src/game.ml", line 19, characters 15-33:
 > 19 |       if (not (String.starts_with "####" line)) then

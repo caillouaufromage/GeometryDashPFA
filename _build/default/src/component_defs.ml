@@ -56,6 +56,12 @@ class block_type =
     method block_type = block_type
   end
 
+class inverted_gravity =
+  object
+    val inverted_gravity = Component.def true
+    method inverted_gravity = inverted_gravity
+  end
+
 class type player =
   object
     inherit position
@@ -69,4 +75,5 @@ class type player =
     inherit on_jump
     inherit block_type
     inherit rot
+    inherit inverted_gravity
   end

@@ -10,7 +10,8 @@ class type collidable =
     inherit block_type
   end
 
-type t = collidable
+type t = collidable;;
+type blockSide = Top | Bottom | Left | Right;;
 
 let init () = ()
 
@@ -22,24 +23,44 @@ let onCollision (b1: collidable) (b2: collidable) =
     let ply = Game_state.get_player() in
     let solid = (if t1 != Block_type.Player then b1 else b2) in
     let solid_type = solid#block_type#get in
+    let side = ref Top in
+    let size = solid#box#get in
 
-    (*if solid_type = Block_type.Solid then
-      ply#position#set (Vector.add ply#position#get Vector.{x = 0.0; y = -100.0});*)
+    (* On veut savoir de quel côté il touche le bloc *)
+    let normVec1 = Vector.normalize (Vector.sub ply#position#get solid#position#get) in
+    (* Haut à gauche*)
+    let normVec2 = Vector.normalize (
+      Vector.sub (
+        Vector.add solid#position#get (Vector.{x = float_of_int (-size.width / 2); y = float_of_int (-size.height / 2)})) 
+        solid#position#get
+    ) in
+    
+    if (normVec2.y > normVec1.y) then
+      side := Top
+    else if (normVec1.y > (-. normVec2.y)) then
+      side := Bottom
+    else if (normVec1.x < normVec2.x) then
+      side := Left
+    else
+      side := Right;
 
-      let outside = ply#position#get.x < solid#position#get.y in
-      if (outside != ply#inverted_gravity#get) then begin
-        (* Redonner les sauts au joueur *)
-        ply#on_jump#set 1;
+    let e = match !side with
+      | Top -> (Gfx.debug "\nTop");
+      | Bottom -> (Gfx.debug "\nBottom")
+      | Left -> (Gfx.debug "\nLeft")
+      | Right -> (Gfx.debug "\nRight") in
 
-          (* Reset son angle*)
-        let ang = (int_of_float ply#rot#get) mod 90 in
-        if ang < 45 then
-          ply#rot#set ((Float.floor (ply#rot#get /. 90.0)) *. 90.0)
-        else
-          ply#rot#set ((Float.ceil (ply#rot#get /. 90.0)) *. 90.0);
-        end;
+    let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
 
-    ();;
+    if on_ground then begin
+      (* Redonner les sauts au joueur *)
+      ply#on_jump#set 1;
+
+      (* Reset son angle*)
+      let ang = (int_of_float ply#rot#get) mod 90 in
+      let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+      ply#rot#set (rot *. 90.0);
+    end;;
 
 let update _dt el =
   Seq.iteri

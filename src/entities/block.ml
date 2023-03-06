@@ -36,3 +36,9 @@ let make x y width height c mass (block_type: Block_type.block_type) =
   (* Question 8*)
   Collision_system.register (b :> Collision_system.t);
   b
+
+let unregisterAll b =
+  Move_system.unregister (b :> Move_system.t);
+  Force_system.unregister (b :> Force_system.t);
+  Collision_system.unregister (b :> Collision_system.t);
+  Draw_system.unregister (b :> Draw_system.t);

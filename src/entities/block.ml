@@ -17,6 +17,7 @@ let make x y width height c mass (block_type: Block_type.block_type) =
       inherit rot
       inherit inverted_gravity
       inherit first_collide
+      inherit flying
     end
   in
 

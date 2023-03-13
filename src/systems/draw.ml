@@ -36,6 +36,7 @@ let white = Gfx.color 40 40 40 255;;
 let maxTrace = 30;;
 let playerTrace = Array.make maxTrace Vector.{x = 0.0; y = 0.0};;
 let writeIndex = ref 0;;
+let font = Gfx.load_font "" "" 20;;
 
 let update _dt el =
   let win = Game_state.get_window () in
@@ -61,6 +62,7 @@ let update _dt el =
   let backgroundTexture = Hashtbl.find textures 3 in
   if Gfx.resource_ready backgroundTexture then
     Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (int_of_float (plypos.x /. -10.0)) 0 1280 512;
+  let levelEnd = ref 1.0 in
 
   Seq.iter (fun (e : t) ->
     (* En dehors du cadre, on dessine pas*)
@@ -68,9 +70,11 @@ let update _dt el =
     let Rect.{width; height} = e # box # get in
 
     let relativeX = (int_of_float x) - cameraX in
-    let color = e # color # get in 
 
     (* à l'intérieur du cadre OU est assez grand pour traverser le cadre*)
+    if e#block_type#get == Block_type.Level_End then
+      levelEnd := x;
+
     if (relativeX < camW && relativeX + width > 0) then
       let texture = Hashtbl.find textures (texture_from_type e) in
 
@@ -113,7 +117,6 @@ let update _dt el =
               end
             ) playerTrace;
             ();
-            | Level_End -> ();
             | _ -> 
             (* On applique une rotation si il y a besoin*)
             let is_heightSup = width < height in
@@ -141,11 +144,13 @@ let update _dt el =
 
     end;) el;
 
-    (*
-    Affichage niveau restant
-    *)
-
+    let ratio = Float.ceil ((min ((plypos.x +. (float_of_int (ply# box # get).width)) /. !levelEnd) 1.0) *. 100.0) in
+    
     Gfx.set_color ctx (Gfx.color 255 255 255 255);
-    Gfx.fill_rect ctx win_surf 100 50 4 50;
+    Gfx.fill_rect ctx win_surf 100 80 (int_of_float ratio) 4;
+    Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 55;
+    
+    Gfx.set_color ctx (Gfx.color 255 255 255 120);
+    Gfx.fill_rect ctx win_surf 100 80 100 4;
 
     Gfx.commit ctx;;

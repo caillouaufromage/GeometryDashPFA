@@ -141,4 +141,11 @@ let update _dt el =
 
     end;) el;
 
-    Gfx.commit ctx
+    (*
+    Affichage niveau restant
+    *)
+
+    Gfx.set_color ctx (Gfx.color 255 255 255 255);
+    Gfx.fill_rect ctx win_surf 100 50 4 50;
+
+    Gfx.commit ctx;;

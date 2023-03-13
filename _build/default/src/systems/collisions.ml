@@ -19,6 +19,7 @@ let onCollision (b1: collidable) (b2: collidable) =
   let t1 = b1#block_type#get in
   let t2 = b2#block_type#get in
 
+  (* si le joueur b1 tombe sur une pique b2 *)
   if(t1 = Block_type.Player || t2 = Block_type.Player) then
     let ply = Game_state.get_player() in
     let solid = (if t1 != Block_type.Player then b1 else b2) in
@@ -43,18 +44,29 @@ let onCollision (b1: collidable) (b2: collidable) =
       side := Left
     else
       side := Right;
-
+    
     let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
 
-    if on_ground then begin
-      (* Redonner les sauts au joueur *)
-      ply#on_jump#set 1;
+    match solid_type with
+    | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 0.0});
+    | Block_type.Solid ->  
+      if on_ground then (
+          (* Redonner les sauts au joueur *)
+          ply#on_jump#set 1;
 
-      (* Reset son angle*)
-      let ang = (int_of_float ply#rot#get) mod 90 in
-      let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
-      ply#rot#set (rot *. 90.0);
-    end;;
+          (* Reset son angle*)
+          let ang = (int_of_float ply#rot#get) mod 90 in
+          let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+          ply#rot#set (rot *. 90.0);
+    )
+    | Block_type.DoubleJump ->
+      ply#on_jump#set 1;
+    | Block_type.ReverseGravity ->
+      ply#inverted_gravity#set (not ply#inverted_gravity#get)
+    | Block_type.Level_End ->
+      ();
+      (*Level_load.set_level (Level_load.get_levelid() + 1)*)
+    | _ -> () ;;
 
 let update _dt el =
   Seq.iteri

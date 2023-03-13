@@ -4,7 +4,7 @@
 # Workspace root:
 # /home/tp-home004/348a23b0-a0d4-4678-89f1-183915bc3687/Bureau/L3/pfa_2/GeometryDashPFA
 # Auto-detected concurrency: 8
-$ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_f7e2ec_output
+$ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_bf5cd4_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -116,12 +116,14 @@ $ /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -config > /var/tmp/dune_f7e2ec_o
 #      }
 #  }
 $ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamldep.opt -modules -impl src/systems/draw.ml) > _build/default/src/.game.objs/draw.ml.d
-> File "src/systems/draw.ml", line 92, characters 12-15:
-> 92 |             let oldPos = ref (e#position#get) in
->                  ^^^
-> Error: Syntax error: 'end' expected
-> File "src/systems/draw.ml", line 77, characters 41-46:
-> 77 |       if Gfx.resource_ready texture then begin
->                                               ^^^^^
->   This 'begin' might be unmatched
-[2]
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -bin-annot -I src/.game.objs/byte -I lib/ecs/.ecs.objs/byte -I lib/gfx/.gfx.objs/byte -no-alias-deps -open Game__ -o src/.game.objs/byte/game__Draw.cmo -c -impl src/systems/draw.ml)
+> File "src/systems/draw.ml", line 71, characters 8-13:
+> 71 |     let color = e # color # get in 
+>              ^^^^^
+> Warning 26 [unused-var]: unused variable color.
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -a -o src/game.cma src/.game.objs/byte/game__.cmo src/.game.objs/byte/game__Vector.cmo src/.game.objs/byte/game__Block_type.cmo src/.game.objs/byte/game__Rect.cmo src/.game.objs/byte/game__Component_defs.cmo src/.game.objs/byte/game__Game_state.cmo src/.game.objs/byte/game__Collisions.cmo src/.game.objs/byte/game__Draw.cmo src/.game.objs/byte/game__Forces.cmo src/.game.objs/byte/game__Input.cmo src/.game.objs/byte/game__Move.cmo src/.game.objs/byte/game__System_defs.cmo src/.game.objs/byte/game__Block.cmo src/.game.objs/byte/game__Level_load.cmo src/.game.objs/byte/game.cmo)
+$ (cd _build/default && /partage/public/kn/opam/4.14.1/bin/ocamlc.opt -w -40 -g -o prog/game_js.bc-for-jsoo -no-check-prims lib/ecs/ecs.cma /partage/public/kn/opam/4.14.1/lib/js_of_ocaml-compiler/runtime/jsoo_runtime.cma /partage/public/kn/opam/4.14.1/lib/js_of_ocaml/js_of_ocaml.cma lib/gfx/gfx_jsoo/gfx_jsoo.cma src/game.cma prog/.game_js.eobjs/byte/dune__exe__Game_js.cmo)
+# Promoting "_build/default/prog/game_js.bc-for-jsoo" to
+# "prog/game_js.bc-for-jsoo"
+$ (cd _build/default/prog && /partage/public/kn/opam/4.14.1/bin/js_of_ocaml -I . --file=../resources/files -o game_js.bc.js game_js.bc-for-jsoo)
+# Promoting "_build/default/prog/game_js.bc.js" to "prog/game_js.bc.js"

@@ -3,6 +3,8 @@ type block_type =
   Solid | (* Solide, collision qui tue seulement si il touche la gauche et droite *)
   Player | (* Permet de vérifier rapidement si les 2 collisions concernent un joueur *)
   Spikes | (* Tue à chaque fois que le joueur le touche*)
+  DoubleJump |
+  ReverseGravity |
   Level_End (* Trigger de fin de niveau *)
 
   (*

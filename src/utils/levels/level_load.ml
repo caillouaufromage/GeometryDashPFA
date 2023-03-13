@@ -17,21 +17,18 @@ let set_level (id : int) =
 
   try
     while true; do
-      let line = input_line chan in
+      let line = String.trim (input_line chan) in
       
       if (not (String.starts_with "####" line)) then begin
-        let blockInfos = (String.split_on_char ' ' (String.trim line)) in
+        let blockInfos = (String.split_on_char ' ' line) in
         let arrInfos = Array.of_list blockInfos in
         let typeBlock = ref Block_type.Solid in
-
-        Gfx.debug "%s\n" line;
         
         (match arrInfos.(4) with
         | "Spikes" -> typeBlock := Block_type.Spikes
         | "Solid" -> typeBlock := Block_type.Solid
         | "DoubleJump" -> typeBlock := Block_type.DoubleJump
         | "ReverseGravity" -> typeBlock := Block_type.ReverseGravity
-        | "NormalGravity" -> typeBlock := Block_type.NormalGravity
         | _ -> failwith "Type de block n'existe pas");
         
         let x = (float_of_string arrInfos.(0)) in

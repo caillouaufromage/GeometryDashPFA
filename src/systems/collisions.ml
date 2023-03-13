@@ -8,6 +8,7 @@ class type collidable =
     inherit mass
     inherit on_jump
     inherit block_type
+    inherit first_collide
   end
 
 type t = collidable;;
@@ -20,55 +21,56 @@ let onCollision (b1: collidable) (b2: collidable) =
   let t2 = b2#block_type#get in
 
   (* si le joueur b1 tombe sur une pique b2 *)
-  if(t1 = Block_type.Player || t2 = Block_type.Player) then
-    let ply = Game_state.get_player() in
-    let solid = (if t1 != Block_type.Player then b1 else b2) in
-    let solid_type = solid#block_type#get in
-    let side = ref Top in
-    let size = solid#box#get in
+  if(t1 != Block_type.Player && t2 != Block_type.Player) then ();
 
-    (* On veut savoir de quel côté il touche le bloc *)
-    let normVec1 = Vector.normalize (Vector.sub ply#position#get solid#position#get) in
-    (* Haut à gauche*)
-    let normVec2 = Vector.normalize (
-      Vector.sub (
-        Vector.add solid#position#get (Vector.{x = float_of_int (-size.width / 2); y = float_of_int (-size.height / 2)})) 
-        solid#position#get
-    ) in
+  let ply = Game_state.get_player() in
+  let solid = (if t1 != Block_type.Player then b1 else b2) in
+  let solid_type = solid#block_type#get in
+  let side = ref Top in
+  let size = solid#box#get in
+
+  (* On veut savoir de quel côté il touche le bloc *)
+  let normVec1 = Vector.normalize (Vector.sub ply#position#get solid#position#get) in
+  (* Haut à gauche*)
+  let normVec2 = Vector.normalize (
+    Vector.sub (
+      Vector.add solid#position#get (Vector.{x = float_of_int (-size.width / 2); y = float_of_int (-size.height / 2)})) 
+      solid#position#get
+  ) in
     
-    if (normVec2.y > normVec1.y) then
-      side := Top
-    else if (normVec1.y > (-. normVec2.y)) then
-      side := Bottom
-    else if (normVec1.x < normVec2.x) then
-      side := Left
-    else
-      side := Right;
+  if (normVec2.y > normVec1.y) then
+    side := Top
+  else if (normVec1.y > (-. normVec2.y)) then
+    side := Bottom
+  else if (normVec1.x < normVec2.x) then
+    side := Left
+  else
+    side := Right;
     
-    let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
+  let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
 
-    match solid_type with
-    | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 0.0});
-    | Block_type.Solid ->  
-      if on_ground then (
-          (* Redonner les sauts au joueur *)
-          ply#on_jump#set 1;
-
-          (* Reset son angle*)
-          let ang = (int_of_float ply#rot#get) mod 90 in
-          let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
-          ply#rot#set (rot *. 90.0);
-    )
-    | Block_type.DoubleJump ->
+  match solid_type with
+  | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 0.0});
+  | Block_type.Solid ->  
+    if on_ground then (
+      (* Redonner les sauts au joueur *)
       ply#on_jump#set 1;
-    | Block_type.ReverseGravity ->
-      ply#inverted_gravity#set true
-    | Block_type.NormalGravity ->
-      ply#inverted_gravity#set false
-    | Block_type.Level_End ->
-      ();
+
+      (* Reset son angle*)
+      let ang = (int_of_float ply#rot#get) mod 90 in
+      let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+      ply#rot#set (rot *. 90.0);
+    )
+  | Block_type.DoubleJump ->
+    if not solid#first_collide#get then
+      ply#on_jump#set 1
+  | Block_type.ReverseGravity -> 
+    if not solid#first_collide#get then
+      ply#inverted_gravity#set (not ply#inverted_gravity#get)
+  | Block_type.Level_End -> ();
       (*Level_load.set_level (Level_load.get_levelid() + 1)*)
-    | _ -> () ;;
+  | _ -> (); 
+  solid#first_collide#set true;;
 
 let update _dt el =
   Seq.iteri

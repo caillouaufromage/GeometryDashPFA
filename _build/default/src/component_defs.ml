@@ -62,6 +62,12 @@ class inverted_gravity =
     method inverted_gravity = inverted_gravity
   end
 
+class first_collide =
+  object
+    val first_collide = Component.def false
+    method first_collide = first_collide
+  end
+
 class type player =
   object
     inherit position
@@ -76,4 +82,5 @@ class type player =
     inherit block_type
     inherit rot
     inherit inverted_gravity
+    inherit first_collide
   end

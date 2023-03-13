@@ -4,5 +4,4 @@
 2016 40 40 520 Solid
 500 300 512 100 Solid
 250 250 512 32 Spikes
-500 20 512 32 ReverseGravity
-500 20 512 32 NormalGravity
+750 400 1024 32 ReverseGravity

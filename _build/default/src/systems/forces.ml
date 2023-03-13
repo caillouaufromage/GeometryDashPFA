@@ -16,9 +16,6 @@ let dt = 1000.0 /. 60.0
 
 let update _dt el =
   (* Vitesse constante sur le joueur*)
-  let p = Game_state.get_player() in
-  let f = p#sum_forces#get in
-
   Seq.iter
     (fun (e : t) ->
       let m = e#mass#get in

@@ -39,6 +39,6 @@ let make x y width height c mass (block_type: Block_type.block_type) =
 
 let unregisterAll b =
   Move_system.unregister (b :> Move_system.t);
+  Draw_system.unregister (b :> Draw_system.t);
   Force_system.unregister (b :> Force_system.t);
   Collision_system.unregister (b :> Collision_system.t);
-  Draw_system.unregister (b :> Draw_system.t);

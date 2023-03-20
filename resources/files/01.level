@@ -1,12 +1,2 @@
 #### MURS DU NIVEAU ( NE TUENT PAS )
-0 480 2048 32 Solid
-2016 0 0 680 Solid
-256 350 128 32 Spikes
-512 350 128 32 ReverseGravity
-
-750 350 32 32 DoubleJump
-
-850 350 32 32 EnableFlying
-
-1100 0 40 680 DisableFlying
-2000 40 40 520 EndLevel
+0 8 32 1 Solid

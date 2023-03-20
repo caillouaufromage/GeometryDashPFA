@@ -97,8 +97,6 @@ let update _dt el =
              Il faudra améliorer cela si on a beaucoup (> 30) objets simultanément.
           *)
 
-
-          (*if j > i && (Float.is_finite m1 || Float.is_finite m2) then begin*)
           if (j > i) && (Float.is_finite m1 || Float.is_finite m2) then begin
             (* les composants du rectangle r2 *)
             let pos2 = e2#position#get in

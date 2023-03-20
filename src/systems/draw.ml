@@ -16,7 +16,7 @@ let textures: (int, Gfx.surface Gfx.resource) Hashtbl.t = Hashtbl.create 3;;
 let init () =
   let ctx = Gfx.get_context (Game_state.get_window()) in
 
-  Hashtbl.add textures 1 (Gfx.load_image ctx "resources/player.png");
+  Hashtbl.add textures 1 (Gfx.load_image ctx "resources/player/run.png");
   Hashtbl.add textures 2 (Gfx.load_image ctx "resources/wall1.png");
   Hashtbl.add textures 4 (Gfx.load_image ctx "resources/wall2.png");   
   Hashtbl.add textures 5 (Gfx.load_image ctx "resources/wall2.png");
@@ -69,39 +69,17 @@ let update _dt el =
     ply#rot#set (ply#rot#get +. 3.5);
 
   (* Parallax, on déplace à une vitesse différente le background que le plan principal *)
-  let backgroundTexture = Hashtbl.find textures 10 in
-  let backgroundTexture2 = Hashtbl.find textures 11 in
-  let backgroundTexture3 = Hashtbl.find textures 12 in
-  let backgroundTexture4 = Hashtbl.find textures 13 in
-  let startBackgroundX = -((int_of_float (plypos.x/.10.0)) mod 688) in
-  let startBackgroundX2 = -((int_of_float (plypos.x/.5.0)) mod 688) in
-  let startBackgroundX3 = -((int_of_float (plypos.x/.2.5)) mod 688) in
-  let startBackgroundX4 = -((int_of_float (plypos.x/.1.5)) mod 688) in
+  for i = 1 to 4 do
+    let backgroundTexture = Hashtbl.find textures (10 + (i-1)) in
 
-  (* Vertical *)
-  if Gfx.resource_ready backgroundTexture then begin
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) startBackgroundX 0 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688) 0 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688*2) 0 688 211;
-  end;
+    let startBackgroundX = -((int_of_float (plypos.x/. (10.0 /. float_of_int(i)))) mod 688) in
 
-  if Gfx.resource_ready backgroundTexture2 then begin
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) startBackgroundX2 90 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) (startBackgroundX2 + 688) 90 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) (startBackgroundX2 + 688*2) 90 688 211;
-  end;
-
-  if Gfx.resource_ready backgroundTexture3 then begin
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) startBackgroundX3 200 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) (startBackgroundX3 + 688) 200 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) (startBackgroundX3 + 688*2) 200 688 211;
-  end;
-
-  if Gfx.resource_ready backgroundTexture4 then begin
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) startBackgroundX4 280 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) (startBackgroundX4 + 688) 280 688 211;
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) (startBackgroundX4 + 688*2) 280 688 211;
-  end;
+    if Gfx.resource_ready backgroundTexture then begin
+      Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) startBackgroundX (90*(i-1)) 688 211;
+      Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688) (90*(i-1)) 688 211;
+      Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688*2) (90*(i-1)) 688 211;
+    end;
+  done;
 
   let levelEnd = ref 1.0 in
 
@@ -131,26 +109,27 @@ let update _dt el =
             playerTrace.(!writeIndex) <- e#position#get;
               
             (* On doit dessiner sa trace*)
-            for i = 0 to (maxTrace-1) do
-              let readIndex = (i + (!writeIndex + 1)) mod maxTrace in
+            for i = 1 to (maxTrace-2) do
+              let readIndex = (i + !writeIndex) mod maxTrace in
               let oldPos = playerTrace.(readIndex) in
+              let size = float_of_int(i) /. 30.0 in
 
-              (*Gfx.debug "%d %f\n" readIndex oldPos.x;*)
-
-              if (i mod 2) == 1 then
-                Gfx.set_color ctx (Gfx.color 52 152 219 255)
-              else
-                Gfx.set_color ctx (Gfx.color 232 67 147 255);
+              begin
+                if (i mod 2) == 1 then
+                  Gfx.set_color ctx (Gfx.color 52 152 219 (int_of_float (255.0 *. size)))
+                else
+                  Gfx.set_color ctx (Gfx.color 232 67 147 (int_of_float (255.0 *. size)));
+              end;
 
               let distY = (y -. oldPos.y) in
               let distX = (x -. oldPos.x) in
-              let euclidDist = Float.sqrt (Float.pow distY 2.0 +. Float.pow distX 2.0) in
-              let euclidDist = (min 10.0 euclidDist) in
+              Random.init(readIndex);
+              let euclidDist = Random.int 10 in
 
               let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
               Gfx.set_transform ctx ang false false;
 
-              Gfx.fill_rect ctx win_surf ((int_of_float x) - cameraX + width/2) (int_of_float y + height/2) (int_of_float euclidDist) (int_of_float euclidDist);
+              Gfx.fill_rect ctx win_surf (int_of_float oldPos.x - cameraX + width/2) (int_of_float oldPos.y + height/2 - euclidDist/2 - (Random.int 20 - 10)) euclidDist euclidDist;
               Gfx.reset_transform ctx;
             done;
   
@@ -160,6 +139,8 @@ let update _dt el =
 
             let animID = (int_of_float (Float.floor (mod_float (_dt *. 2.0) 1200.0) /. 120.1)) + 30 in
             let animTex = Hashtbl.find textures animID in
+
+            (*Gfx.blit_full ctx win_surf (Gfx.get_resource animTex)*)
 
             if Gfx.resource_ready animTex then
               Gfx.blit_scale ctx win_surf (Gfx.get_resource animTex) relativeX (int_of_float y) width height;

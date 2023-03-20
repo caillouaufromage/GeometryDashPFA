@@ -18,10 +18,19 @@ let init () =
 
   Hashtbl.add textures 1 (Gfx.load_image ctx "resources/player.png");
   Hashtbl.add textures 2 (Gfx.load_image ctx "resources/wall1.png");
-  Hashtbl.add textures 3 (Gfx.load_image ctx "resources/fd1.png");
   Hashtbl.add textures 4 (Gfx.load_image ctx "resources/wall2.png");   
   Hashtbl.add textures 5 (Gfx.load_image ctx "resources/wall2.png");
   Hashtbl.add textures 6 (Gfx.load_image ctx "resources/wall2.png");   
+
+  Hashtbl.add textures 10 (Gfx.load_image ctx "resources/fd1.png");
+  Hashtbl.add textures 11 (Gfx.load_image ctx "resources/mountain2.png");
+  Hashtbl.add textures 12 (Gfx.load_image ctx "resources/fd2.png");
+  Hashtbl.add textures 13 (Gfx.load_image ctx "resources/fd3.png");
+
+  for i = 0 to 11 do
+    Hashtbl.add textures (30 + i) (Gfx.load_image ctx ("resources/player/tile0" ^ (Printf.sprintf "%02d" i) ^ ".png"))
+  done;
+
   () ;;
 
 let texture_from_type (b: t) =
@@ -37,6 +46,7 @@ let maxTrace = 30;;
 let playerTrace = Array.make maxTrace Vector.{x = 0.0; y = 0.0};;
 let writeIndex = ref 0;;
 let font = Gfx.load_font "" "" 20;;
+let playerAnim = ref 0;;
 
 let update _dt el =
   let win = Game_state.get_window () in
@@ -56,12 +66,43 @@ let update _dt el =
 
   (* On veut rafraichir le joueur seulement si il a sauté, on ne veut pas animer en cas de chute *)
   if ply#on_jump#get != 1 then
-    ply#rot#set (ply#rot#get +. 1.0);
+    ply#rot#set (ply#rot#get +. 3.5);
 
   (* Parallax, on déplace à une vitesse différente le background que le plan principal *)
-  let backgroundTexture = Hashtbl.find textures 3 in
-  if Gfx.resource_ready backgroundTexture then
-    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (int_of_float (plypos.x /. -10.0)) 0 1280 512;
+  let backgroundTexture = Hashtbl.find textures 10 in
+  let backgroundTexture2 = Hashtbl.find textures 11 in
+  let backgroundTexture3 = Hashtbl.find textures 12 in
+  let backgroundTexture4 = Hashtbl.find textures 13 in
+  let startBackgroundX = -((int_of_float (plypos.x/.10.0)) mod 688) in
+  let startBackgroundX2 = -((int_of_float (plypos.x/.5.0)) mod 688) in
+  let startBackgroundX3 = -((int_of_float (plypos.x/.2.5)) mod 688) in
+  let startBackgroundX4 = -((int_of_float (plypos.x/.1.5)) mod 688) in
+
+  (* Vertical *)
+  if Gfx.resource_ready backgroundTexture then begin
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) startBackgroundX 0 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688) 0 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture) (startBackgroundX + 688*2) 0 688 211;
+  end;
+
+  if Gfx.resource_ready backgroundTexture2 then begin
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) startBackgroundX2 90 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) (startBackgroundX2 + 688) 90 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture2) (startBackgroundX2 + 688*2) 90 688 211;
+  end;
+
+  if Gfx.resource_ready backgroundTexture3 then begin
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) startBackgroundX3 200 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) (startBackgroundX3 + 688) 200 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture3) (startBackgroundX3 + 688*2) 200 688 211;
+  end;
+
+  if Gfx.resource_ready backgroundTexture4 then begin
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) startBackgroundX4 280 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) (startBackgroundX4 + 688) 280 688 211;
+    Gfx.blit_scale ctx win_surf (Gfx.get_resource backgroundTexture4) (startBackgroundX4 + 688*2) 280 688 211;
+  end;
+
   let levelEnd = ref 1.0 in
 
   Seq.iter (fun (e : t) ->
@@ -81,12 +122,6 @@ let update _dt el =
       if Gfx.resource_ready texture then begin
         match e#block_type#get with
           | Player -> 
-            (* Player icone *)
-            if e#rot#get != 0.0 then
-              Gfx.set_transform ctx e#rot#get false false;
-              
-            Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) relativeX (int_of_float y) width height;
-              
             (* Index trace*)
             writeIndex := !writeIndex + 1;
             
@@ -96,26 +131,41 @@ let update _dt el =
             playerTrace.(!writeIndex) <- e#position#get;
               
             (* On doit dessiner sa trace*)
+            for i = 0 to (maxTrace-1) do
+              let readIndex = (i + (!writeIndex + 1)) mod maxTrace in
+              let oldPos = playerTrace.(readIndex) in
+
+              (*Gfx.debug "%d %f\n" readIndex oldPos.x;*)
+
+              if (i mod 2) == 1 then
+                Gfx.set_color ctx (Gfx.color 52 152 219 255)
+              else
+                Gfx.set_color ctx (Gfx.color 232 67 147 255);
+
+              let distY = (y -. oldPos.y) in
+              let distX = (x -. oldPos.x) in
+              let euclidDist = Float.sqrt (Float.pow distY 2.0 +. Float.pow distX 2.0) in
+              let euclidDist = (min 10.0 euclidDist) in
+
+              let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
+              Gfx.set_transform ctx ang false false;
+
+              Gfx.fill_rect ctx win_surf ((int_of_float x) - cameraX + width/2) (int_of_float y + height/2) (int_of_float euclidDist) (int_of_float euclidDist);
+              Gfx.reset_transform ctx;
+            done;
+  
+            (* Player icone *)
+            if e#rot#get != 0.0 then
+              Gfx.set_transform ctx e#rot#get false false;
+
+            let animID = (int_of_float (Float.floor (mod_float (_dt *. 2.0) 1200.0) /. 120.1)) + 30 in
+            let animTex = Hashtbl.find textures animID in
+
+            if Gfx.resource_ready animTex then
+              Gfx.blit_scale ctx win_surf (Gfx.get_resource animTex) relativeX (int_of_float y) width height;
+
             if e#rot#get != 0.0 then Gfx.reset_transform ctx;
             
-            Array.iteri (fun index a ->
-              if(index != !writeIndex + 1) then begin
-                let oldPos = playerTrace.(if (index-1) < 0 then maxTrace-1 else (index-1)) in
-                let Vector.{x; y} = a in
-                Gfx.set_color ctx (Gfx.color 52 152 219 255);
-                let distY = (y -. oldPos.y) in
-                let distX = (x -. oldPos.x) in
-                let euclidDist = Float.sqrt (Float.pow distY 2.0 +. Float.pow distX 2.0) in
-
-                if euclidDist < 10.0 then begin
-                  let ang = (Float.atan2 distY distX) *. 180.0 /. 3.141592 +. 180.0 in
-                  Gfx.set_transform ctx ang false false;
-
-                  Gfx.fill_rect ctx win_surf ((int_of_float x) - cameraX + width/2) (int_of_float y + height/2) (int_of_float euclidDist) (int_of_float euclidDist);
-                  Gfx.reset_transform ctx;
-                end
-              end
-            ) playerTrace;
             ();
             | _ -> 
             (* On applique une rotation si il y a besoin*)

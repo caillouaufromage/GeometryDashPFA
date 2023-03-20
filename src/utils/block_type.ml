@@ -5,6 +5,8 @@ type block_type =
   Spikes | (* Tue à chaque fois que le joueur le touche*)
   DoubleJump |
   ReverseGravity |
+  EnableFlying |
+  DisableFlying |
   Level_End (* Trigger de fin de niveau *)
 
   (*

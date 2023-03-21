@@ -8,6 +8,7 @@ type event =
   | NoEvent (* no event *)
   | KeyUp of string (* Key with a given name was released *)
   | KeyDown of string (* Key with a given name was pressed *)
+  | Mouse
 
 let parse_window_spec s =
   try

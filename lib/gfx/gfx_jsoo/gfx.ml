@@ -13,6 +13,7 @@ let () =
 type window = Dom_html.canvasElement Js.t
 type context = Dom_html.canvasRenderingContext2D Js.t
 type surface = Dom_html.canvasElement Js.t
+type audio = Dom_html.audioElement Js.t
 type color = Js.js_string Js.t
 type font = Js.js_string Js.t
 
@@ -45,6 +46,8 @@ let create s =
             Js.Optdef.iter e##.key (fun k ->
                 Queue.add (Gfx_base.KeyUp (Js.to_string k)) events);
             Js._true);
+      Dom_html.window##.onmousedown :=
+        Dom_html.handler (fun e -> Queue.add (Gfx_base.Mouse) events; Js._true);
       canvas
 
 let get_window_size w = (w##.clientWidth, w##.clientHeight)
@@ -83,6 +86,27 @@ let create_surface _ctx w h =
   canvas##.height := h;
   canvas##.width := w;
   canvas
+
+let load_sound src =
+  let doc = Dom_html.document in
+  let audio = Dom_html.createAudio doc in
+  audio##.src := Js.string src;
+
+  let is_ready () = (audio##.readyState == HAVE_CURRENT_DATA || audio##.readyState == HAVE_ENOUGH_DATA || audio##.readyState == HAVE_FUTURE_DATA) in
+
+  let get () =
+    if not (is_ready ()) then failwith "Audio is not ready";
+    audio
+  in
+  { get; is_ready }
+
+let play_sound audio = 
+  audio##play;
+  ();;
+  
+let stop_sound audio =
+  audio##pause;
+  ();;
 
 let surface_size (s : surface) = (s##.width, s##.height)
 

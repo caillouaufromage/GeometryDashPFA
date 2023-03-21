@@ -93,6 +93,11 @@ val create_surface : context -> int -> int -> surface
     context.
 *)
 
+type audio
+val load_sound : string -> audio resource
+val play_sound : audio -> unit
+val stop_sound : audio -> unit
+
 val surface_size : surface -> int * int
 (** returns the dimensions of a surface *)
 
@@ -163,6 +168,7 @@ type event =
   | NoEvent (** no event *)
   | KeyUp of string (** Key with a given name was released *)
   | KeyDown of string (** Key with a given name was pressed *)
+  | Mouse
 
   (** The type of input events. 
       The string describing keyboard events is implementation defined.

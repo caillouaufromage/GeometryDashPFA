@@ -17,10 +17,25 @@ let update _dt el =
   let () =
     match Gfx.poll_event () with
     | Gfx.NoEvent -> ()
-    | Gfx.KeyDown s ->
-      Hashtbl.replace keys s ()
-    | Gfx.KeyUp s -> Hashtbl.remove keys s
+    | Gfx.KeyDown s ->begin
+        Hashtbl.replace keys s ();
+        Audio.init();
+      end
+    | Gfx.KeyUp s -> begin
+        Hashtbl.remove keys s;
+        Audio.init();
+      end
+
+    (* La raison de l'ajout: https://stackoverflow.com/a/57533029 *)
+    | Gfx.Mouse -> Audio.init()
   in
+
+  if Hashtbl.mem keys "1" then
+    Level_load.set_level 1
+  else if Hashtbl.mem keys "2" then
+    Level_load.set_level 2
+  else if Hashtbl.mem keys "0" then
+    Level_load.set_level 0;
 
   if Hashtbl.mem keys "c" && (ply#on_jump#get > 0 || ply#flying#get) then begin
     (*let f = Vector.add (Vec) {x=0.0; y=1.9475} in*)

@@ -71,7 +71,8 @@ let onCollision (b1: collidable) (b2: collidable) =
         end
       | Block_type.DisableFlying -> if fc then ply#flying#set false
       | Block_type.EnableFlying -> if fc then ply#flying#set true
-      | _ -> ()(*Level_load.set_level (Level_load.get_levelid() + 1)*);
+      | _ -> 
+        (*Level_load.set_level (Level_load.get_levelid() + 1)*)();
   end;
 
   solid#first_collide#set true;;

@@ -31,6 +31,10 @@ let init () =
     Hashtbl.add textures (30 + i) (Gfx.load_image ctx ("resources/player/tile0" ^ (Printf.sprintf "%02d" i) ^ ".png"))
   done;
 
+  let f = (fun key va -> Resource_queue.add (fun () -> Gfx.resource_ready va)) in
+
+  Hashtbl.iter f textures;
+
   () ;;
 
 let texture_from_type (b: t) =
@@ -102,86 +106,99 @@ let update _dt el =
           | Player -> 
             (* Index trace*)
             writeIndex := !writeIndex + 1;
-            
+
             if !writeIndex >= maxTrace then
               writeIndex := 0;
               
-            playerTrace.(!writeIndex) <- e#position#get;
+              playerTrace.(!writeIndex) <- e#position#get;
               
-            (* On doit dessiner sa trace*)
-            for i = 1 to (maxTrace-2) do
-              let readIndex = (i + !writeIndex) mod maxTrace in
-              let oldPos = playerTrace.(readIndex) in
-              let size = float_of_int(i) /. 30.0 in
+              (* On doit dessiner sa trace*)
+              for i = 1 to (maxTrace-2) do
+                let readIndex = (i + !writeIndex) mod maxTrace in
+                let oldPos = playerTrace.(readIndex) in
+                let size = float_of_int(i) /. 30.0 in
+                
+                begin
+                  if (i mod 2) == 1 then
+                    Gfx.set_color ctx (Gfx.color 52 152 219 (int_of_float (255.0 *. size)))
+                  else
+                    Gfx.set_color ctx (Gfx.color 232 67 147 (int_of_float (255.0 *. size)));
+                end;
+                  
+                let distY = (y -. oldPos.y) in
+                let distX = (x -. oldPos.x) in
+                Random.init(readIndex);
+                let euclidDist = Random.int 10 in
+                  
+                let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
+                Gfx.set_transform ctx ang false false;
+                  
+                Gfx.fill_rect ctx win_surf (int_of_float oldPos.x - cameraX + width/2) (int_of_float oldPos.y + height/2 - euclidDist/2 - (Random.int 20 - 10)) euclidDist euclidDist;
+                Gfx.reset_transform ctx;
+              done;
+                
+              (* Player icone *)
+              if e#rot#get != 0.0 then
+                Gfx.set_transform ctx e#rot#get false false;
+                  
+              let animID = (int_of_float (Float.floor (mod_float (_dt *. 2.0) 1200.0) /. 120.1)) + 30 in
+              let animTex = Hashtbl.find textures animID in
+                  
+              (*Gfx.blit_full ctx win_surf (Gfx.get_resource animTex)*)
+                  
+              if Gfx.resource_ready animTex then
+                Gfx.blit_scale ctx win_surf (Gfx.get_resource animTex) relativeX (int_of_float y) width height;
+                    
+              if e#rot#get != 0.0 then Gfx.reset_transform ctx;
+                    
+              ();
 
-              begin
-                if (i mod 2) == 1 then
-                  Gfx.set_color ctx (Gfx.color 52 152 219 (int_of_float (255.0 *. size)))
+              | _ -> 
+                (* On applique une rotation si il y a besoin*)
+                let is_heightSup = width < height in
+                let min = if is_heightSup then width else height in
+                let max = if is_heightSup then height else width in
+                      
+                let displayRatio = (float_of_int max) /. (float_of_int min) in
+                let displayInt = int_of_float (Float.floor displayRatio) in
+                ();
+                      
+                (* On affiche ce qu'on peut avant le reste *)
+                let tex = (Gfx.get_resource texture) in
+                for i = 0 to displayInt-1 do
+                  if is_heightSup then begin
+                    let drawValue = ((int_of_float y) + i * width) in
+
+                    if drawValue + min > 0 && drawValue < 512 then
+                      Gfx.blit_scale ctx win_surf tex relativeX drawValue min min;
+                  end
+                  else
+                    begin
+                      let drawValue = (relativeX + i * height) in
+
+                      if drawValue + min > 0 && drawValue < 1024 then
+                        Gfx.blit_scale ctx win_surf tex drawValue (int_of_float y) min min;
+                    end
+                done;
+                        
+                let rest = int_of_float (fst (Float.modf displayRatio) *. (float_of_int min)) in
+                ();
+                        
+                if is_heightSup then
+                  Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) relativeX ((int_of_float y) + displayInt * width) width rest
                 else
-                  Gfx.set_color ctx (Gfx.color 232 67 147 (int_of_float (255.0 *. size)));
-              end;
-
-              let distY = (y -. oldPos.y) in
-              let distX = (x -. oldPos.x) in
-              Random.init(readIndex);
-              let euclidDist = Random.int 10 in
-
-              let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
-              Gfx.set_transform ctx ang false false;
-
-              Gfx.fill_rect ctx win_surf (int_of_float oldPos.x - cameraX + width/2) (int_of_float oldPos.y + height/2 - euclidDist/2 - (Random.int 20 - 10)) euclidDist euclidDist;
-              Gfx.reset_transform ctx;
-            done;
-  
-            (* Player icone *)
-            if e#rot#get != 0.0 then
-              Gfx.set_transform ctx e#rot#get false false;
-
-            let animID = (int_of_float (Float.floor (mod_float (_dt *. 2.0) 1200.0) /. 120.1)) + 30 in
-            let animTex = Hashtbl.find textures animID in
-
-            (*Gfx.blit_full ctx win_surf (Gfx.get_resource animTex)*)
-
-            if Gfx.resource_ready animTex then
-              Gfx.blit_scale ctx win_surf (Gfx.get_resource animTex) relativeX (int_of_float y) width height;
-
-            if e#rot#get != 0.0 then Gfx.reset_transform ctx;
+                  Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) (relativeX + displayInt * height) (int_of_float y) rest height;
+              end;) el;
             
-            ();
-            | _ -> 
-            (* On applique une rotation si il y a besoin*)
-            let is_heightSup = width < height in
-            let min = if is_heightSup then width else height in
-            let max = if is_heightSup then height else width in
+          let ratio = Float.ceil ((min ((plypos.x +. (float_of_int (ply# box # get).width)) /. !levelEnd) 1.0) *. 100.0) in
 
-            let displayRatio = (float_of_int max) /. (float_of_int min) in
-            let displayInt = int_of_float (Float.floor displayRatio) in
+          if (Level_load.get_levelid() != 0) then begin
+            Gfx.set_color ctx (Gfx.color 255 255 255 255);
+            Gfx.fill_rect ctx win_surf 100 80 (int_of_float ratio) 4;
+            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 55;
 
-            (* On affiche ce qu'on peut avant le reste *)
-            for i = 0 to displayInt-1 do
-              if is_heightSup then
-                Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) relativeX ((int_of_float y) + i * width) width width
-              else
-                Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) (relativeX + i * height) (int_of_float y) height height
-            done;
-
-            let rest = int_of_float (fst (Float.modf displayRatio) *. (float_of_int min)) in
-            ();
-
-            if is_heightSup then
-              Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) relativeX ((int_of_float y) + displayInt * width) width rest
-            else
-              Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) (relativeX + displayInt * height) (int_of_float y) rest height;
-
-    end;) el;
-
-    let ratio = Float.ceil ((min ((plypos.x +. (float_of_int (ply# box # get).width)) /. !levelEnd) 1.0) *. 100.0) in
-    
-    Gfx.set_color ctx (Gfx.color 255 255 255 255);
-    Gfx.fill_rect ctx win_surf 100 80 (int_of_float ratio) 4;
-    Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 55;
-    
-    Gfx.set_color ctx (Gfx.color 255 255 255 120);
-    Gfx.fill_rect ctx win_surf 100 80 100 4;
+            Gfx.set_color ctx (Gfx.color 255 255 255 120);
+            Gfx.fill_rect ctx win_surf 100 80 100 4;
+          end;
 
     Gfx.commit ctx;;

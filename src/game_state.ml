@@ -1,6 +1,11 @@
 let window = ref None;;
 let ply = ref None;;
-let level = ref 1;;
+
+type playState = Menu | Playing;;
+let state = ref Menu;;
+
+let get_playstate() = !state;;
+let set_playstate playstatus = state := playstatus;;
 
 let get_window () =
   match !window with

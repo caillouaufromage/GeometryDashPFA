@@ -87,10 +87,17 @@ let create_surface _ctx w h =
   canvas##.width := w;
   canvas
 
-let load_sound src =
+let load_sound src loop =
   let doc = Dom_html.document in
   let audio = Dom_html.createAudio doc in
-  audio##.src := Js.string src;
+  audio##.src := Js.string (src ^ "?autoplay=1");
+  audio##.volume := 0.25;
+
+  if loop then
+    audio##.loop := Js.bool true;
+
+  audio##.autoplay := Js.bool true;
+  (*audio##pause;*)
 
   let is_ready () = (audio##.readyState == HAVE_CURRENT_DATA || audio##.readyState == HAVE_ENOUGH_DATA || audio##.readyState == HAVE_FUTURE_DATA) in
 

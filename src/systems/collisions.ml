@@ -48,31 +48,32 @@ let onCollision (b1: collidable) (b2: collidable) =
   begin
     match (solid#block_type#get) with
       | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 200.0})
-      (*
       | Block_type.ReverseGravity ->
         if fc then begin
           ply#inverted_gravity#set (not ply#inverted_gravity#get);
           ply#position#set Vector.{x=ply#position#get.x; y=ply#position#get.y +. 0.5}
         end
-      | Block_type.DoubleJump -> if fc then ply#on_jump#set = 1*)
+      | Block_type.DoubleJump -> if fc then ply#on_jump#set 1
+      | Block_type.Solid -> begin
+          if ply#on_jump#get == 0 then
+            Audio.play 4;
 
-      | Block_type.ReverseGravity | Block_type.Solid ->  
-        let side = get_side ply solid in
-        let on_ground = (side == Top && not ply#inverted_gravity#get) || (side == Bottom && ply#inverted_gravity#get) in
-        if on_ground then begin
-          ply#on_jump#set 1;
-          
-          let ang = (int_of_float ply#rot#get) mod 90 in
-          (*let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+          let side = get_side ply solid in
+          let on_ground = (side == Top && not ply#inverted_gravity#get) || (side == Bottom && ply#inverted_gravity#get) in
+          if on_ground then begin
+            ply#on_jump#set 1;
+            
+            let ang = (int_of_float ply#rot#get) mod 90 in
+            (*let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
 
-          ply#rot#set (rot *. 90.0);
-          *)
-          ply#rot#set 0.0;
+            ply#rot#set (rot *. 90.0);
+            *)
+            ply#rot#set 0.0;
+          end
         end
       | Block_type.DisableFlying -> if fc then ply#flying#set false
       | Block_type.EnableFlying -> if fc then ply#flying#set true
-      | _ -> 
-        (*Level_load.set_level (Level_load.get_levelid() + 1)*)();
+      | _ -> Level_load.set_level (Level_load.get_levelid() + 1);
   end;
 
   solid#first_collide#set true;;

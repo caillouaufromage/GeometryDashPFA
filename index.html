@@ -4,21 +4,31 @@
         <meta charset="UTF-8"/>
         <title>Game</title>
         <style>
+            @font-face { font-family: 'ForestDashFont'; src: url('resources/font3.ttf'); } 
+
+            * {
+                background-color: rgb(33, 33, 40);
+            }
+
             #game_canvas,#console {
-                border:1pt solid black;
+                border:0px;
                 margin: auto;
                 padding-left: 0;
                 padding-right: 0;
                 margin-left: auto;
                 margin-right: auto;
-                display: block;
+                display: flex;
+                vertical-align: middle;
                 width:800px;
                 height:600px;
             }
+
             #console {
                 font-family: monospace;
                 white-space: pre;
                 overflow: auto;
+                width: 0px;
+                height: 0px;
             }
         </style>
     </head>

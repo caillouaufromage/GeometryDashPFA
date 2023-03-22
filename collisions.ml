@@ -50,13 +50,13 @@ let onCollision (b1: collidable) (b2: collidable) =
     match solid_type with
     | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 0.0});
     | Block_type.Solid ->  if on_ground then (
-                            (* Redonner les sauts au joueur *)
-                            ply#on_jump#set 1;
+      (* Redonner les sauts au joueur *)
+      ply#on_jump#set 1;
 
-                            (* Reset son angle*)
-                            let ang = (int_of_float ply#rot#get) mod 90 in
-                            let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
-                            ply#rot#set (rot *. 90.0);
+      (* Reset son angle*)
+      let ang = (int_of_float ply#rot#get) mod 90 in
+      let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+      ply#rot#set (rot *. 90.0);
     )
     | _ -> () ;;
 

@@ -94,7 +94,7 @@ val create_surface : context -> int -> int -> surface
 *)
 
 type audio
-val load_sound : string -> audio resource
+val load_sound : string -> bool -> audio resource
 val play_sound : audio -> unit
 val stop_sound : audio -> unit
 

@@ -7,4 +7,7 @@ let get_levelid () =
 let levelBlockList = ref [];;
   
 let set_level (id : int) =
-  level := id;;
+  if(id > 2) then
+    level := 0
+  else
+    level := id;;

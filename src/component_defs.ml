@@ -46,7 +46,7 @@ class rot =
 
 class on_jump =
   object
-    val on_jump = Component.def 2
+    val on_jump = Component.def 1
     method on_jump = on_jump
   end
 

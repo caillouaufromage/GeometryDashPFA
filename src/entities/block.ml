@@ -24,7 +24,7 @@ let make x y width height c mass (block_type: Block_type.block_type) =
   b#position#set Vector.{ x; y };
   b#box#set Rect.{ width; height };
   b#color#set c;
-  b#on_jump#set 2;
+  b#on_jump#set 1;
   b#block_type#set block_type;
   b#rot#set 0.0;
   Draw_system.register (b :> Draw_system.t);

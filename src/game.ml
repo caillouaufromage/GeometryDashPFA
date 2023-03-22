@@ -3,7 +3,7 @@ open System_defs
 (* On crée une fenêtre *)
 let level = ref 0;;
 let init () =
-  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 1024 512) in
+  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 1680 512) in
   Game_state.set_window win
 
 (* Système de niveau *)
@@ -52,7 +52,9 @@ let set_level (id : int) =
   with End_of_file ->
     close_in chan;
 
-  (Game_state.get_player())#position#set Vector.{x = 0.0; y = 450.0};;
+  let ply = (Game_state.get_player()) in
+  ply#sum_forces#set Vector.{x = 0.0; y = 0.0};
+  ply#position#set Vector.{x = 0.0; y = 400.0};;
 
 let canStart = ref false;;
 
@@ -70,14 +72,13 @@ let update dt =
   end
   else if Resource_queue.canStart() then begin
     canStart := true;
-    set_level 0;
   end;
   true;;
 
 let run () =
   init ();
-  Audio.init();
   Draw_system.init();
+  Audio.init();
   let x = 150.0 in
   let y = 400.0 in
   let mass = 1.0 +. Random.float 19.0 in
@@ -85,5 +86,6 @@ let run () =
   s#sum_forces#set Vector.{ x = 0.25; y = 0.0 };
 
   Game_state.set_player s;
+  set_level 0;
 
   Gfx.main_loop update;;

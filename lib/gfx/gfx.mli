@@ -159,6 +159,8 @@ val render_text : context -> string -> font -> surface
     [txt] rendered using font [f] with color [c].
 *)
 
+val render_fasttext : context -> string -> font -> float -> float -> unit
+
 val measure_text : string -> font -> int * int
 (** [mesure_text  txt f] returns the size (width height) of the surface that
       [render_text] would return, without creating it.

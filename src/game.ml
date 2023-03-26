@@ -73,6 +73,7 @@ let update dt =
   else if Resource_queue.canStart() then begin
     canStart := true;
   end;
+
   true;;
 
 let run () =

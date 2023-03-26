@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8"/>
+
         <title>Game</title>
         <style>
             @font-face { font-family: 'ForestDashFont'; src: url('resources/font3.ttf'); } 
@@ -11,14 +12,13 @@
             }
 
             #game_canvas,#console {
-                border:0px;
+                border:1pt solid black;
                 margin: auto;
                 padding-left: 0;
                 padding-right: 0;
                 margin-left: auto;
                 margin-right: auto;
                 display: flex;
-                vertical-align: middle;
                 width:800px;
                 height:600px;
             }
@@ -27,8 +27,12 @@
                 font-family: monospace;
                 white-space: pre;
                 overflow: auto;
-                width: 0px;
-                height: 0px;
+                border-color: white;
+                border-width: 1px;
+                color: white;
+                width: 800px;
+                height: 600px;
+                text-align:end;
             }
         </style>
     </head>

@@ -231,6 +231,10 @@ let render_text _ctx text font =
   ctx##fillText (Js.string text) 0.0 (float h *. 0.1);
   canvas
 
+let render_fasttext ctx text font w h =
+  ctx##.font := font;
+  ctx##fillText (Js.string text) w h;;
+
 let poll_event () =
   if Queue.is_empty events then Gfx_base.NoEvent else Queue.pop events
 

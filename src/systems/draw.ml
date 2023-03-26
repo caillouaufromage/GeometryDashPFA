@@ -13,6 +13,8 @@ class type drawable =
 type t = drawable
 let textures: (int, Gfx.surface Gfx.resource) Hashtbl.t = Hashtbl.create 3;;
 let bgTextures: (int, (Gfx.surface Gfx.resource * int)) Hashtbl.t = Hashtbl.create 3;;
+let white = (Gfx.color 255 255 255 255);;
+let black = (Gfx.color 40 40 0 255);;
 
 let init () =
   let ctx = Gfx.get_context (Game_state.get_window()) in
@@ -66,14 +68,13 @@ let playerAnim = ref 0;;
 let drawOutlinedText ctx surf text font txtw txth gap clr clrBorder = 
   Gfx.set_color ctx clrBorder;
 
-  let src = (Gfx.render_text ctx text font) in
-  Gfx.blit ctx surf src (txtw-gap) txth;
-  Gfx.blit ctx surf src (txtw+gap) txth;
-  Gfx.blit ctx surf src txtw (txth-gap);
-  Gfx.blit ctx surf src txtw (txth+gap);
+  Gfx.render_fasttext ctx text font (txtw-.gap) txth;
+  Gfx.render_fasttext ctx text font (txtw+.gap) txth;
+  Gfx.render_fasttext ctx text font txtw (txth-.gap);
+  Gfx.render_fasttext ctx text font txtw (txth+.gap);
 
   Gfx.set_color ctx clr;
-  Gfx.blit ctx surf (Gfx.render_text ctx text font) txtw txth;;
+  Gfx.render_fasttext ctx text font txtw txth;;
 
 let drawBackground ctx win_surf (plypos: Vector.t) =
   (* Parallax, on déplace à une vitesse différente le background que le plan principal *)
@@ -101,6 +102,7 @@ let drawBackground ctx win_surf (plypos: Vector.t) =
 let frame = ref 0;;
 
 let update _dt el =
+  let lastRenderingTime = Sys.time() in
   frame := !frame + 1;
   let win = Game_state.get_window () in
   let ctx = Gfx.get_context win in
@@ -159,8 +161,8 @@ let update _dt el =
               Random.init(readIndex);
               let euclidDist = Random.int 10 in
                     
-              let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
-              Gfx.set_transform ctx ang false false;
+              (*let ang = ((Float.atan2 distY distX) *. 180.0 /. 3.141592) +. 180.0 in
+              Gfx.set_transform ctx ang false false;*)
 
               begin
                 if (readIndex mod 2) == 1 then
@@ -171,7 +173,7 @@ let update _dt el =
 
               Gfx.fill_rect ctx win_surf (int_of_float oldPos.x - cameraX + width/2 - 2) (int_of_float oldPos.y + height/2 - euclidDist/2 - (Random.int 20 - 10) - 2) (euclidDist+2) (euclidDist+2);
 
-              Gfx.reset_transform ctx;
+              (*Gfx.reset_transform ctx;*)
             done;
                 
             (* Player icone *)
@@ -229,38 +231,36 @@ let update _dt el =
               Gfx.blit_scale ctx win_surf tex (relativeX + displayInt * height) (int_of_float y) rest height
           end
           ) el;
-            
+
           let ratio = Float.ceil ((min ((plypos.x +. (float_of_int (ply# box # get).width)) /. !levelEnd) 1.0) *. 100.0) in
-
+          
           if (Level_load.get_levelid() != 0) then begin
-            Gfx.set_color ctx (Gfx.color 40 40 40 255);
-            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 98 55;
-            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 102 55;
-            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 53;
-            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 57;
-
-            Gfx.set_color ctx (Gfx.color 255 255 255 255);
-            Gfx.blit ctx win_surf (Gfx.render_text ctx ((Printf.sprintf "%.1f" ratio)^"%") font) 100 55;
-
-            Gfx.set_color ctx (Gfx.color 40 40 40 255);
-            Gfx.fill_rect ctx win_surf 98 98 204 8;
-
-            Gfx.set_color ctx (Gfx.color 255 255 255 255);
+            let tx = ((Printf.sprintf "%.1f" ratio)^"%") in
+            let white = (Gfx.color 255 255 255 255) in
+            
+            Gfx.set_color ctx white;
+            drawOutlinedText ctx win_surf tx font 100.0 55.0 2.0 white black;
+            (*Gfx.blit ctx win_surf (Gfx.render_text ctx tx font) 100 55;*)
+            
+            Gfx.set_color ctx white;
             Gfx.fill_rect ctx win_surf 100 100 (int_of_float ratio*2) 4;
           end;
 
     if Level_load.get_levelid() == 0 then begin
-      let white = (Gfx.color 255 255 255 255) in
-      let black = (Gfx.color 40 40 0 255) in
-      drawOutlinedText ctx win_surf "Controles" font_24 750 300 2 white black;
-      drawOutlinedText ctx win_surf "C     Sauter" font_18 750 340 2 white black;
-      drawOutlinedText ctx win_surf "1   Niveau 1" font_18 750 358 2 white black;
-      drawOutlinedText ctx win_surf "2   Niveau 2" font_18 750 376 2 white black;
+      drawOutlinedText ctx win_surf "Controles" font_24 750.0 300.0 2.0 white black;
+      drawOutlinedText ctx win_surf "C     Sauter" font_18 750.0 340.0 2.0 white black;
+      drawOutlinedText ctx win_surf "1   Niveau 1" font_18 750.0 358.0 2.0 white black;
+      drawOutlinedText ctx win_surf "2   Niveau 2" font_18 750.0 376.0 2.0 white black;
 
-      drawOutlinedText ctx win_surf "Forest" font_64 650 100 3 (Gfx.color 253 203 110 255) (Gfx.color 255 234 167 255);
-      drawOutlinedText ctx win_surf "  Dash" font_64 650 170 3 (Gfx.color 116 185 255 255) (Gfx.color 253 121 168 255);
+      drawOutlinedText ctx win_surf "Forest" font_64 650.0 100.0 3.0 (Gfx.color 253 203 110 255) (Gfx.color 255 234 167 255);
+      drawOutlinedText ctx win_surf "  Dash" font_64 650.0 170.0 3.0 (Gfx.color 116 185 255 255) (Gfx.color 253 121 168 255);
       let texture = Hashtbl.find textures 30 in
       Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) 700 180 64 64;
 
     end;
+
+    let time = ((Sys.time() -. lastRenderingTime) *. 1000.0) in
+
+    if time > 10.0 then
+      Gfx.debug "Last render time: %fms\n" time;
     Gfx.commit ctx;;

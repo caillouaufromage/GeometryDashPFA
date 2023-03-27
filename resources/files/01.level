@@ -1,2 +1,11 @@
 #### MURS DU NIVEAU ( NE TUENT PAS )
-0 15 32 1 Solid
+#### x y taille poids type
+0 15 1048 1 Solid
+15 14 1 1 Spikes
+20 14 1 1 Solid
+21 14 15 1 Ground
+21 13 5 1 Solid
+26 13 1 1 Spikes
+27 13 1 1 Solid
+
+#### FIN DU NIVEAU

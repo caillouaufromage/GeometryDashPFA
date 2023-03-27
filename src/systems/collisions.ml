@@ -54,7 +54,7 @@ let onCollision (b1: collidable) (b2: collidable) =
           ply#position#set Vector.{x=ply#position#get.x; y=ply#position#get.y +. 0.5}
         end
       | Block_type.DoubleJump -> if fc then ply#on_jump#set 1
-      | Block_type.Solid -> begin
+      | Block_type.Solid | Block_type.Ground -> begin
           if ply#on_jump#get == 0 then
             Audio.play 4;
 

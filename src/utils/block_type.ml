@@ -1,6 +1,7 @@
 type block_type = 
   Level_Solid | (* Fait rien, murs de la partie *)
   Solid | (* Solide, collision qui tue seulement si il touche la gauche et droite *)
+  Ground | (* Solide, autre skin: terre *)
   Player | (* Permet de vérifier rapidement si les 2 collisions concernent un joueur *)
   Spikes | (* Tue à chaque fois que le joueur le touche*)
   DoubleJump |

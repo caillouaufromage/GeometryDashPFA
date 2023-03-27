@@ -24,6 +24,7 @@ let init () =
   Hashtbl.add textures 4 (Gfx.load_image ctx "resources/wall2.png");   
   Hashtbl.add textures 5 (Gfx.load_image ctx "resources/wall2.png");
   Hashtbl.add textures 6 (Gfx.load_image ctx "resources/wall2.png");   
+  Hashtbl.add textures 7 (Gfx.load_image ctx "resources/wall3.png");
 
   Hashtbl.add bgTextures 10 ((Gfx.load_image ctx "resources/background_1/layer_0.png"), 0);
   Hashtbl.add bgTextures 11 ((Gfx.load_image ctx "resources/background_1/layer_1.png"), 200);
@@ -52,6 +53,7 @@ let texture_from_type (b: t) =
   match blockType with
     | Block_type.Player -> 1
     | Block_type.Spikes -> 4
+    | Block_type.Ground -> 7
     | _ -> 2;;
 
 let white = Gfx.color 255 255 255 255;;

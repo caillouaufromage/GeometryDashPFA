@@ -36,6 +36,7 @@ let set_level (id : int) =
         (match arrInfos.(4) with
         | "Spikes" -> typeBlock := Block_type.Spikes
         | "Solid" -> typeBlock := Block_type.Solid
+        | "Ground" -> typeBlock := Block_type.Ground
         | "DoubleJump" -> typeBlock := Block_type.DoubleJump
         | "ReverseGravity" -> typeBlock := Block_type.ReverseGravity
         | "EndLevel" -> typeBlock := Block_type.Level_End

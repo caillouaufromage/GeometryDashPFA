@@ -250,10 +250,13 @@ let update _dt el =
       drawOutlinedText ctx win_surf "1   Niveau 1" font_18 412.0 358.0 4.0 white black;
       drawOutlinedText ctx win_surf "2   Niveau 2" font_18 412.0 376.0 4.0 white black;
 
-      drawOutlinedText ctx win_surf "Forest" font_64 330.0 100.0 8.0 (Gfx.color 120 224 143 255) (Gfx.color 7 153 146 255);
-      drawOutlinedText ctx win_surf "  Dash" font_64 330.0 170.0 8.0 (Gfx.color 249 151 119 255) (Gfx.color 111 27 27 255);
+      let t = Float.sin(_dt /. 400.0) in
+      let ytitle = 125.0 +. (t *. 15.0) in
+
+      drawOutlinedText ctx win_surf "Forest" font_64 330.0 ytitle 8.0 (Gfx.color 120 224 143 255) (Gfx.color 7 153 146 255);
+      drawOutlinedText ctx win_surf "  Dash" font_64 330.0 (ytitle+.70.0) 8.0 (Gfx.color 249 151 119 255) (Gfx.color 111 27 27 255);
       let texture = Hashtbl.find textures 30 in
-      Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) 360 115 64 64;
+      Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) 360 (int_of_float (ytitle+.15.0)) 64 64;
 
     end;
 

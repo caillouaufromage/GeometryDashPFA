@@ -27,6 +27,8 @@ let get_resource r = r.get ()
 let events = Queue.create ()
 let get_context w = w##getContext Dom_html._2d_
 
+let setGlobalAlpha ctx alpha = ctx##.globalAlpha := alpha;;
+
 let create s =
   let id, w, h, _ = parse_window_spec s in
   match Dom_html.getElementById_coerce id Dom_html.CoerceTo.canvas with

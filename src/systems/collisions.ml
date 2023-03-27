@@ -60,6 +60,10 @@ let onCollision (b1: collidable) (b2: collidable) =
 
           let side = get_side ply solid in
           let on_ground = (side == Top && not ply#inverted_gravity#get) || (side == Bottom && ply#inverted_gravity#get) in
+          if(side == Left) then begin
+            ply#position#set (Vector.{x = 0.0; y = 200.0});
+          end;
+
           if on_ground then begin
             ply#on_jump#set 1;
             
@@ -79,7 +83,8 @@ let onCollision (b1: collidable) (b2: collidable) =
   solid#first_collide#set true;;
 
 let update _dt el =
-  let plyPosX = (Game_state.get_player())#position#get in
+  let ply = Game_state.get_player() in
+  let plyPosX = ply#position#get in
   Seq.iteri
     (fun i (e1 : t) ->
       (* les composants du rectangle r1 *)
@@ -88,8 +93,8 @@ let update _dt el =
       let v1 = e1#velocity#get in
       let m1 = e1#mass#get in
 
-      if (pos1.x +. (float_of_int(box1.width)) < plyPosX.x) then
-        ();
+      if (pos1.x +. (float_of_int(box1.width)) < plyPosX.x) then ();
+      if(plyPosX.x +. 1000.0 < pos1.x) then ();
 
       Seq.iteri
         (fun j (e2 : t) ->

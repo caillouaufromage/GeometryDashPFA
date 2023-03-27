@@ -27,12 +27,12 @@ let init () =
   Hashtbl.add textures 7 (Gfx.load_image ctx "resources/wall3.png");
 
   Hashtbl.add bgTextures 10 ((Gfx.load_image ctx "resources/background_1/layer_0.png"), 0);
-  Hashtbl.add bgTextures 11 ((Gfx.load_image ctx "resources/background_1/layer_1.png"), 200);
+  Hashtbl.add bgTextures 11 ((Gfx.load_image ctx "resources/background_1/layer_1.png"), 210);
   Hashtbl.add bgTextures 12 ((Gfx.load_image ctx "resources/background_1/layer_2.png"), 50);
   Hashtbl.add bgTextures 13 ((Gfx.load_image ctx "resources/background_1/layer_3.png"), 60);
 
   Hashtbl.add bgTextures 20 ((Gfx.load_image ctx "resources/background_2/layer_0.png"), 0);
-  Hashtbl.add bgTextures 21 ((Gfx.load_image ctx "resources/background_2/layer_1.png"), 180);
+  Hashtbl.add bgTextures 21 ((Gfx.load_image ctx "resources/background_2/layer_1.png"), 205);
   Hashtbl.add bgTextures 22 ((Gfx.load_image ctx "resources/background_2/layer_2.png"), 80);
   Hashtbl.add bgTextures 23 ((Gfx.load_image ctx "resources/background_2/layer_3.png"), 50);
   Hashtbl.add bgTextures 24 ((Gfx.load_image ctx "resources/background_2/layer_4.png"), 0);
@@ -189,10 +189,10 @@ let update _dt el =
           | _ -> 
             (* On applique une rotation si il y a besoin*)
             let is_heightSup = width < height in
-            let min = if is_heightSup then width else height in
+            let minSize = if is_heightSup then width else height in
             let max = if is_heightSup then height else width in
                       
-            let displayRatio = (float_of_int max) /. (float_of_int min) in
+            let displayRatio = (float_of_int max) /. (float_of_int minSize) in
             let displayInt = int_of_float (Float.floor displayRatio) in
                         
             let tex = (Gfx.get_resource texture) in
@@ -200,28 +200,38 @@ let update _dt el =
             (* On affiche ce qu'on peut avant le reste *)
             try
               for i = 0 to displayInt-1 do
-                if is_heightSup then begin
-                    let drawValue = ((int_of_float y) + i * width) in
+                let ratioBehind = float_of_int(if is_heightSup then relativeX else (relativeX + i * height)) in
+                let ratioBehind = min (ratioBehind /. 100.0) 1.0 in
+                let bonusX = int_of_float(((1.0 -. ratioBehind) *. float_of_int(minSize)) /. 2.0) in
+                Gfx.setGlobalAlpha ctx (if ratioBehind < 0.99 then ratioBehind/.2.0 else 1.0);
 
-                    if (drawValue > 1024) then
-                      (* Inutile de continuer la boucle, cela va ralentir le jeu dans le menu sinon *)
-                      raise Exit
-                    else if drawValue + min > 0 then
-                      Gfx.blit_scale ctx win_surf tex relativeX drawValue min min;
+                let white = (Gfx.color 255 255 255 (int_of_float(ratioBehind *. 255.0))) in
+                Gfx.set_color ctx white;
+                
+                if is_heightSup then begin
+                  let drawValue = ((int_of_float y) + i * width) in
+
+                  if (drawValue > 1024) then
+                    (* Inutile de continuer la boucle, cela va ralentir le jeu dans le menu sinon *)
+                    raise Exit
+                  else if drawValue + minSize > 0 then
+                    Gfx.blit_scale ctx win_surf tex (relativeX + bonusX) drawValue (int_of_float(float_of_int(minSize) *. ratioBehind)) (int_of_float(float_of_int(minSize) *. ratioBehind));
                   end
                 else begin
                   let drawValue = (relativeX + i * height) in
 
                   if (drawValue > 1024) then
                     raise Exit
-                  else if drawValue + min > 0 then
-                    Gfx.blit_scale ctx win_surf tex drawValue (int_of_float y) min min;
-                end
+                  else if drawValue + minSize > 0 then
+                    Gfx.blit_scale ctx win_surf tex (drawValue + bonusX) (int_of_float y + bonusX) (int_of_float(float_of_int(minSize) *. ratioBehind)) (int_of_float(float_of_int(minSize) *. ratioBehind));
+                end;
+
+                Gfx.setGlobalAlpha ctx 1.0;
               done;
             with
               | Exit -> ();
 
-            let rest = int_of_float (fst (Float.modf displayRatio) *. (float_of_int min)) in
+            let rest = int_of_float (fst (Float.modf displayRatio) *. (float_of_int minSize)) in
 
             if is_heightSup then
               Gfx.blit_scale ctx win_surf tex relativeX (int_of_float y + displayInt * width) width rest

@@ -66,6 +66,7 @@ val set_context_logical_size : context -> int -> int -> unit
     will be automatically zoomed and displayed as a 4x4 pixel in the window.    
 *)
 
+val setGlobalAlpha : context -> float -> unit
 val get_context_logical_size : context -> int * int
 (** [get_context_logical_size ctx w h] returns the logical size of the context.  
 *)

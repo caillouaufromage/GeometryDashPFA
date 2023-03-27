@@ -22,7 +22,7 @@ let update _dt el =
       if Float.is_finite m then begin
       let f = e#sum_forces#get in
 
-      let f = Vector.add f {x=0.0; y = (if e#inverted_gravity#get then -0.01 else 0.01)} in 
+      let f = Vector.add f {x=0.0; y = (if e#inverted_gravity#get then -0.025 else 0.025)} in 
         e#sum_forces#set Vector.zero;
         let a = Vector.mult (1. /. m) f in
         let dv = Vector.mult dt a in

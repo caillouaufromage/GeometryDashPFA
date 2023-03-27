@@ -16,20 +16,8 @@ type blockSide = Top | Bottom | Left | Right;;
 
 let init () = ()
 
-let onCollision (b1: collidable) (b2: collidable) =
-  let t1 = b1#block_type#get in
-  let t2 = b2#block_type#get in
-
-  (* si le joueur b1 tombe sur une pique b2 *)
-  if(t1 != Block_type.Player && t2 != Block_type.Player) then ();
-
-  let ply = Game_state.get_player() in
-  let solid = (if t1 != Block_type.Player then b1 else b2) in
-  let solid_type = solid#block_type#get in
-  let side = ref Top in
+let get_side (ply: player) (solid: collidable) =
   let size = solid#box#get in
-
-  (* On veut savoir de quel côté il touche le bloc *)
   let normVec1 = Vector.normalize (Vector.sub ply#position#get solid#position#get) in
   (* Haut à gauche*)
   let normVec2 = Vector.normalize (
@@ -39,40 +27,59 @@ let onCollision (b1: collidable) (b2: collidable) =
   ) in
     
   if (normVec2.y > normVec1.y) then
-    side := Top
+    Top
   else if (normVec1.y > (-. normVec2.y)) then
-    side := Bottom
+    Bottom
   else if (normVec1.x < normVec2.x) then
-    side := Left
+    Left
   else
-    side := Right;
-    
-  let on_ground = (!side == Top && not ply#inverted_gravity#get) || (!side == Bottom && ply#inverted_gravity#get) in
+    Right;;
 
-  match solid_type with
-  | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 0.0});
-  | Block_type.Solid ->  
-    if on_ground then (
-      (* Redonner les sauts au joueur *)
-      ply#on_jump#set 1;
+let onCollision (b1: collidable) (b2: collidable) =
+  let t1 = b1#block_type#get in
+  let t2 = b2#block_type#get in
 
-      (* Reset son angle*)
-      let ang = (int_of_float ply#rot#get) mod 90 in
-      let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
-      ply#rot#set (rot *. 90.0);
-    )
-  | Block_type.DoubleJump ->
-    if not solid#first_collide#get then
-      ply#on_jump#set 1
-  | Block_type.ReverseGravity -> 
-    if not solid#first_collide#get then
-      ply#inverted_gravity#set (not ply#inverted_gravity#get)
-  | Block_type.Level_End -> ();
-      (*Level_load.set_level (Level_load.get_levelid() + 1)*)
-  | _ -> (); 
+  if(t1 != Block_type.Player && t2 != Block_type.Player) then ();
+
+  let ply = Game_state.get_player() in
+  let solid = (if t1 != Block_type.Player then b1 else b2) in
+  let fc = not solid#first_collide#get in
+
+  begin
+    match (solid#block_type#get) with
+      | Block_type.Spikes -> ply#position#set (Vector.{x = 0.0; y = 200.0})
+      | Block_type.ReverseGravity ->
+        if fc then begin
+          ply#inverted_gravity#set (not ply#inverted_gravity#get);
+          ply#position#set Vector.{x=ply#position#get.x; y=ply#position#get.y +. 0.5}
+        end
+      | Block_type.DoubleJump -> if fc then ply#on_jump#set 1
+      | Block_type.Solid -> begin
+          if ply#on_jump#get == 0 then
+            Audio.play 4;
+
+          let side = get_side ply solid in
+          let on_ground = (side == Top && not ply#inverted_gravity#get) || (side == Bottom && ply#inverted_gravity#get) in
+          if on_ground then begin
+            ply#on_jump#set 1;
+            
+            let ang = (int_of_float ply#rot#get) mod 90 in
+            (*let rot = (if ang < 45 then Float.floor (ply#rot#get /. 90.0) else Float.ceil (ply#rot#get /. 90.0)) in
+
+            ply#rot#set (rot *. 90.0);
+            *)
+            ply#rot#set 0.0;
+          end
+        end
+      | Block_type.DisableFlying -> if fc then ply#flying#set false
+      | Block_type.EnableFlying -> if fc then ply#flying#set true
+      | _ -> Level_load.set_level (Level_load.get_levelid() + 1);
+  end;
+
   solid#first_collide#set true;;
 
 let update _dt el =
+  let plyPosX = (Game_state.get_player())#position#get in
   Seq.iteri
     (fun i (e1 : t) ->
       (* les composants du rectangle r1 *)
@@ -80,16 +87,19 @@ let update _dt el =
       let box1 = e1#box#get in
       let v1 = e1#velocity#get in
       let m1 = e1#mass#get in
+
+      if (pos1.x +. (float_of_int(box1.width)) < plyPosX.x) then
+        ();
+
       Seq.iteri
         (fun j (e2 : t) ->
-          (*Gfx.debug "%f" (e1#velocity#get).x;*)
           let m2 = e2#mass#get in
           (* Une double boucle qui évite de comparer deux fois
              les objets : si on compare A et B, on ne compare pas B et A.
              Il faudra améliorer cela si on a beaucoup (> 30) objets simultanément.
           *)
 
-          if j > i && (Float.is_finite m1 || Float.is_finite m2) then begin
+          if (j > i) && (Float.is_finite m1 || Float.is_finite m2) then begin
             (* les composants du rectangle r2 *)
             let pos2 = e2#position#get in
             let box2 = e2#box#get in
@@ -126,7 +136,7 @@ let update _dt el =
               let s_pos, s_rect = Rect.mdiff pos2 box2 pos1 box1 in
               if Rect.has_origin s_pos s_rect then begin
                 Gfx.debug "%f, %f, %d x %d\n" s_pos.Vector.x s_pos.Vector.y
-                  s_rect.Rect.width s_rect.Rect.height
+                  s_rect.Rect.width s_rect.Rect.height;
                 (*assert false*)
               end;
               e1#position#set pos1;
@@ -141,7 +151,7 @@ let update _dt el =
               (* Elasticité fixe. En pratique, l'elasticité peut être stockée dans
                  les objets comme un composant : 1 pour la balle et les murs, 0.5 pour
                  des obstacles absorbants, 1.2 pour des obstacles rebondissant, … *)
-              let e = 0.0 in
+              let e = 0.01 in
               (* normalisation des masses *)
               let m1, m2 =
                 if Float.is_infinite m1 && Float.is_infinite m2 then
@@ -150,14 +160,14 @@ let update _dt el =
                   else (0.0, 0.0)
                 else (m1, m2)
               in
-              (* [7] calcul de l'impulsion *)
-              (*
+              (* [7] calcul de l'impulsion
               let jbase = -.(1.0 +. e) *. Vector.dot v n in
               let m1divm2 = m1 /. m2 in
               let m2divm1 = m2 /. m1 in
               let j1 = jbase /. (1.0 +. m1divm2) in
               let j2 = jbase /. (1.0 +. m2divm1) in
               *)
+
               let j =
                 -.(1.0 +. e) *. Vector.dot v n /. ((1. /. m1) +. (1. /. m2))
               in
@@ -173,4 +183,4 @@ let update _dt el =
             end;
           end)
         el)
-    el
+    el;

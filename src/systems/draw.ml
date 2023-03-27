@@ -54,7 +54,7 @@ let texture_from_type (b: t) =
     | Block_type.Spikes -> 4
     | _ -> 2;;
 
-let white = Gfx.color 40 40 40 255;;
+let white = Gfx.color 255 255 255 255;;
 let maxTrace = 30;;
 let playerTrace = Array.make maxTrace Vector.{x = 0.0; y = 0.0};;
 let writeIndex = ref 0;;
@@ -68,9 +68,6 @@ let playerAnim = ref 0;;
 let drawOutlinedText ctx surf text font txtw txth gap clr clrBorder = 
   Gfx.set_color ctx clrBorder;
 
-  Gfx.render_fasttext ctx text font (txtw-.gap) txth;
-  Gfx.render_fasttext ctx text font (txtw+.gap) txth;
-  Gfx.render_fasttext ctx text font txtw (txth-.gap);
   Gfx.render_fasttext ctx text font txtw (txth+.gap);
 
   Gfx.set_color ctx clr;
@@ -91,7 +88,7 @@ let drawBackground ctx win_surf (plypos: Vector.t) =
       let width = (fst contextSize) in
       let widthf = (float_of_int width) in
       let startBackgroundX = -((int_of_float (plypos.x/. (10.0 /. float_of_int(i)))) mod width) in
-      let rep = int_of_float (Float.ceil ((1680.0 -. (float_of_int startBackgroundX)) /. widthf)) in
+      let rep = int_of_float (Float.ceil ((1024.0 -. (float_of_int startBackgroundX)) /. widthf)) in
 
       for xIndex=0 to rep do
         Gfx.blit ctx win_surf tex (startBackgroundX + (((fst contextSize))*xIndex)) !writeY;
@@ -102,7 +99,6 @@ let drawBackground ctx win_surf (plypos: Vector.t) =
 let frame = ref 0;;
 
 let update _dt el =
-  let lastRenderingTime = Sys.time() in
   frame := !frame + 1;
   let win = Game_state.get_window () in
   let ctx = Gfx.get_context win in
@@ -120,7 +116,7 @@ let update _dt el =
 
   (* On veut rafraichir le joueur seulement si il a sauté, on ne veut pas animer en cas de chute *)
   if ply#on_jump#get != 1 then
-    ply#rot#set (ply#rot#get +. 6.0);
+    ply#rot#set (ply#rot#get +. 9.0);
 
   drawBackground ctx win_surf plypos;
   let levelEnd = ref 1.0 in
@@ -205,7 +201,7 @@ let update _dt el =
                 if is_heightSup then begin
                     let drawValue = ((int_of_float y) + i * width) in
 
-                    if (drawValue > 1680) then
+                    if (drawValue > 1024) then
                       (* Inutile de continuer la boucle, cela va ralentir le jeu dans le menu sinon *)
                       raise Exit
                     else if drawValue + min > 0 then
@@ -214,7 +210,7 @@ let update _dt el =
                 else begin
                   let drawValue = (relativeX + i * height) in
 
-                  if (drawValue > 1680) then
+                  if (drawValue > 1024) then
                     raise Exit
                   else if drawValue + min > 0 then
                     Gfx.blit_scale ctx win_surf tex drawValue (int_of_float y) min min;
@@ -247,20 +243,16 @@ let update _dt el =
           end;
 
     if Level_load.get_levelid() == 0 then begin
-      drawOutlinedText ctx win_surf "Controles" font_24 750.0 300.0 2.0 white black;
-      drawOutlinedText ctx win_surf "C     Sauter" font_18 750.0 340.0 2.0 white black;
-      drawOutlinedText ctx win_surf "1   Niveau 1" font_18 750.0 358.0 2.0 white black;
-      drawOutlinedText ctx win_surf "2   Niveau 2" font_18 750.0 376.0 2.0 white black;
+      drawOutlinedText ctx win_surf "Controles" font_24 412.0 300.0 4.0 white black;
+      drawOutlinedText ctx win_surf "C     Sauter" font_18 412.0 340.0 4.0 white black;
+      drawOutlinedText ctx win_surf "1   Niveau 1" font_18 412.0 358.0 4.0 white black;
+      drawOutlinedText ctx win_surf "2   Niveau 2" font_18 412.0 376.0 4.0 white black;
 
-      drawOutlinedText ctx win_surf "Forest" font_64 650.0 100.0 3.0 (Gfx.color 253 203 110 255) (Gfx.color 255 234 167 255);
-      drawOutlinedText ctx win_surf "  Dash" font_64 650.0 170.0 3.0 (Gfx.color 116 185 255 255) (Gfx.color 253 121 168 255);
+      drawOutlinedText ctx win_surf "Forest" font_64 330.0 100.0 8.0 (Gfx.color 120 224 143 255) (Gfx.color 7 153 146 255);
+      drawOutlinedText ctx win_surf "  Dash" font_64 330.0 170.0 8.0 (Gfx.color 249 151 119 255) (Gfx.color 111 27 27 255);
       let texture = Hashtbl.find textures 30 in
-      Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) 700 180 64 64;
+      Gfx.blit_scale ctx win_surf (Gfx.get_resource texture) 360 115 64 64;
 
     end;
 
-    let time = ((Sys.time() -. lastRenderingTime) *. 1000.0) in
-
-    if time > 10.0 then
-      Gfx.debug "Last render time: %fms\n" time;
     Gfx.commit ctx;;

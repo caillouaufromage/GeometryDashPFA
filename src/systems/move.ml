@@ -14,7 +14,7 @@ let dt = 1000. /. 60.
 
 let update _dt el =
   let ply = Game_state.get_player() in
-  ply#velocity#set Vector.{x = 0.33; y = ply#velocity#get.y};
+  ply#velocity#set Vector.{x = 0.4; y = ply#velocity#get.y};
 
   Seq.iter
     (fun (e : t) ->

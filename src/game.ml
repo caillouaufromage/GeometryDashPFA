@@ -3,7 +3,7 @@ open System_defs
 (* On crée une fenêtre *)
 let level = ref 0;;
 let init () =
-  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 1680 512) in
+  let win = Gfx.create (Format.sprintf "game_canvas:%dx%d:" 1024 512) in
   Game_state.set_window win
 
 (* Système de niveau *)

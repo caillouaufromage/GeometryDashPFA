@@ -79,7 +79,6 @@ let onCollision (b1: collidable) (b2: collidable) =
   solid#first_collide#set true;;
 
 let update _dt el =
-  let lastRenderingTime = Sys.time() in
   let plyPosX = (Game_state.get_player())#position#get in
   Seq.iteri
     (fun i (e1 : t) ->
@@ -185,7 +184,3 @@ let update _dt el =
           end)
         el)
     el;
-
-    let time = ((Sys.time() -. lastRenderingTime) *. 1000.0) in
-    if time > 10.0 then
-      Gfx.debug "Last render time: %fms\n" time;

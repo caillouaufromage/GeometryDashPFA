@@ -1,0 +1,95 @@
+#### MURS DU NIVEAU ( NE TUENT PAS )
+#### x y longueur hauteur type
+
+#### PLATEFORMES 1
+-10 15 95 1 Solid
+20 14 1 1 Spikes
+35 14 2 1 Spikes
+37 14 1 1 Platform
+44 13 1 1 Platform
+52 12 1 1 Platform
+
+#### 
+75 14 2 1 Spikes
+
+85 15 22 1 Ground
+85 14 10 1 Solid
+95 14 3 1 Spikes
+98 14 9 1 Solid
+107 14 4 1 Spikes
+#### 
+107 15 4 1 Solid
+
+111 12 11 1 Solid
+111 13 11 1 Ground
+111 14 11 1 Ground
+111 15 11 1 Ground
+
+116 11 1 1 Spikes
+
+#### PLATEFORMES 2
+122 14 25 1 Lava
+122 15 25 1 Solid
+127 11 2 1 Platform
+132 9 2 1 Platform
+137 7 2 1 Platform
+143 5 1 1 Platform
+
+####
+147 7 20 1 Solid
+147 8 20 1 Ground
+147 9 45 1 Ground
+147 10 45 1 Ground
+147 11 45 1 Ground
+147 12 45 1 Ground
+147 13 45 1 Ground
+147 14 45 1 Ground
+147 15 45 1 Ground
+
+153 6 3 1 Spikes
+154 5 1 1 Platform
+164 6 3 1 Spikes
+165 5 1 1 Platform
+
+####
+192 14 25 1 Lava
+192 15 25 1 Solid
+
+167 8 13 1 Solid
+
+#### TERRE + PIQUE
+171 4 4 1 Spikes
+171 5 4 1 Platform
+
+180 7 11 1 Solid
+180 8 11 1 Ground
+190 6 1 1 Spikes
+
+191 9 1 15 Solid
+191 10 1 15 Ground
+191 11 1 15 Ground
+191 12 1 15 Ground
+191 13 1 15 Ground
+191 14 1 15 Ground
+
+
+191 8 1 1 Spikes
+#### 192 7 5 1 Platform
+
+#### PLATEFORMES + PIQUES
+195 7 4 1 Platform
+198 6 1 1 Spikes
+
+205 10 5 1 Platform
+209 9 1 1 Spikes
+
+217 13 4 1 Solid
+217 14 4 1 Ground
+217 15 4 1 Ground
+
+221 15 10 1 Solid
+
+
+#### FIN DU NIVEAU
+225 14 1 1 FlagBottom
+225 13 1 1 FlagTop
